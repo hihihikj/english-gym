@@ -9,16 +9,55 @@
 <link rel="manifest" href="manifest.webmanifest" />
 <title>English Gym</title>
 <style>
-:root{--bg:#f7f7f5;--card:#fff;--text:#171717;--muted:#6f706b;--line:#e5e5df;--soft:#efefea;--good:#18754a;--warn:#a46a0d}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}.wrap{max-width:840px;margin:auto;padding:16px 12px 72px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.mode{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.metric{background:var(--soft);border-radius:14px;padding:12px;flex:1;min-width:140px}.metric b{display:block;font-size:23px}.small{font-size:13px;color:var(--muted)}.pill{font-size:12px;background:var(--soft);padding:6px 9px;border-radius:999px}.hidden{display:none!important}.center{text-align:center}.sent{font-size:21px;line-height:1.5}.progress{height:8px;background:#ddd;border-radius:99px;overflow:hidden;margin-top:8px}.bar{height:100%;width:0;background:#222}.stack{display:grid;gap:10px}.tip{background:var(--soft);border-radius:12px;padding:10px}.syncdot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#aaa;margin-right:6px}.syncdot.on{background:var(--good)}.syncdot.warn{background:var(--warn)}button,input,textarea{font:inherit}button{border:1px solid var(--line);background:white;padding:11px 14px;border-radius:12px;cursor:pointer}button.primary,button.active{background:#20211f;color:#fff}.hero{font-size:20px;padding:15px 20px}textarea,input{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:white}textarea{min-height:95px}.costguard strong{color:var(--good)}@media(max-width:620px){.mode{grid-template-columns:1fr}.sent{font-size:19px}}
+:root{--bg:#f7f7f5;--card:#fff;--text:#171717;--muted:#6f706b;--line:#e5e5df;--soft:#efefea;--accent:#20211f;--good:#1e7a4b;--warn:#9a6513;--bad:#b33a3a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.wrap{max-width:900px;margin:auto;padding:18px 14px 72px}.top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px}h1{font-size:30px;margin:0}.small{font-size:13px;color:var(--muted)}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin:12px 0}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.metric{background:var(--soft);padding:14px;border-radius:14px;min-width:145px;flex:1}.metric b{display:block;font-size:24px}button,input,textarea{font:inherit}button{border:1px solid var(--line);background:#fff;padding:11px 15px;border-radius:12px;cursor:pointer}button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}button.active{background:var(--accent);color:#fff}.hero{padding:16px 20px;font-size:20px;font-weight:700}input,textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}textarea{min-height:100px;resize:vertical}.progress{height:14px;border-radius:999px;background:#e9e9e4;overflow:hidden}.bar{height:100%;background:#222;width:0;transition:.2s}.mode{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.sentence{font-size:22px;line-height:1.5}.hidden{display:none!important}.pill{font-size:12px;background:var(--soft);padding:6px 10px;border-radius:999px}.good{color:var(--good)}.warn{color:var(--warn)}.bad{color:var(--bad)}.costguard{border-style:dashed}.costguard strong{color:var(--good)}#installBtn{display:none}.syncdot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#999;margin-right:6px}.syncdot.on{background:var(--good)}.syncdot.warn{background:#c98a11}.stack>*+*{margin-top:10px}.center{text-align:center}.stepTitle{font-size:13px;color:var(--muted);font-weight:700;letter-spacing:.02em;text-transform:uppercase}.tip{background:var(--soft);border-radius:12px;padding:10px 12px}.error{background:#fff1f1;border:1px solid #f1c7c7;border-radius:12px;padding:10px 12px;color:#842828}
+@media(max-width:620px){.mode{grid-template-columns:1fr}.sentence{font-size:19px}.top{flex-direction:column}.hero{width:100%}}
 </style>
-</head><body><div class="wrap">
-<h1 style="margin:4px 0">English Gym</h1><div class="small">聽 → 跟讀 → 回想 → 自己說</div>
-<div id="setupCard" class="card hidden"><h3>第一次在這台裝置使用</h3><p>貼上你的「同步鑰匙」，只做這一次。</p><input id="syncKeyInput" type="password" autocomplete="off" placeholder="貼上同步鑰匙" /><div class="row" style="margin-top:10px"><button class="primary" onclick="saveSyncKey()">連接我的進度</button><button onclick="useLocalOnly()">先只用這台</button></div><p id="setupMsg" class="small"></p></div>
-<div class="card costguard"><div class="row"><span class="pill">費用防呆</span><span class="pill"><span id="syncDot" class="syncdot"></span><span id="syncLabel">檢查中</span></span></div><p><strong>額外付費功能：OFF</strong>　沒有 OpenAI API、付費語音、Realtime AI、背景排程或自動加值。</p><p class="small">如果未來要加入任何會額外收費的功能，必須先做新版，而且要先得到你的明確同意。</p></div>
-<div class="card"><h3>今天的腦力</h3><div class="mode"><button onclick="setMode(this,5)">🔴 很累<br><span class="small">約 5 分鐘・1 組</span></button><button class="active" onclick="setMode(this,15)">🟡 普通<br><span class="small">約 15 分鐘・2 組</span></button><button onclick="setMode(this,25)">🟢 今天可以<br><span class="small">約 25 分鐘・3 組</span></button></div></div>
-<div class="card"><div class="row"><div class="metric"><span class="small">本週完成</span><b id="weekDone">0/5</b><div class="progress"><div id="weekBar" class="bar"></div></div></div><div class="metric"><span class="small">目前難度</span><b id="difficulty">3</b><span class="small">1–6</span></div><div class="metric"><span class="small">聽寫平均</span><b id="dictAvg">—</b><span class="small">近 20 題</span></div><div class="metric"><span class="small">最長自由口說</span><b id="bestSpeak">0s</b></div></div></div>
-<div class="card center"><div class="row" style="justify-content:center"><span id="stage" class="pill">Ready</span><span id="roundLabel" class="pill">第 0/2 組</span></div><div id="area" style="margin-top:14px"><h2>今天不用選教材</h2><p>系統會先複習快忘記的，再給一點新挑戰。</p></div><div class="row" style="justify-content:center"><button id="startBtn" class="primary hero" onclick="startSession()">開始今天</button><button id="nextBtn" class="primary hidden" onclick="nextStage()">下一步</button></div></div>
-<div class="card"><h3>最近最容易卡住</h3><ul id="weakness"><li class="small">做完幾題後，這裡會自己整理。</li></ul></div>
-<div class="card"><details><summary>設定與備份</summary><div class="stack" style="margin-top:12px"><div class="tip"><b>學習邏輯</b><div class="small">主動回想＋間隔複習＋剛剛好的難度。低分時先縮短句子，不用一直降級。</div></div><div class="row"><button onclick="syncNow()">立即同步</button><button onclick="exportProgress()">匯出備份</button><button onclick="forgetSyncKey()">這台裝置解除同步</button></div></div></details></div>
-</div><script src="config.js"></script><script src="app.js"></script></body></html>
+</head>
+<body>
+<div class="wrap">
+ <div class="top"><div><h1>English Gym</h1><div class="small">每天一小組：聽 → 跟讀 → 回想 → 自己說</div></div><button id="installBtn">加入主畫面</button></div>
+
+ <div id="setupCard" class="card hidden">
+   <h3>第一次在這台裝置使用</h3>
+   <p>請貼上你的「同步鑰匙」。只要第一次做一次，之後直接點 English Gym 就好。</p>
+   <input id="syncKeyInput" type="password" autocomplete="off" placeholder="貼上同步鑰匙" />
+   <div class="row" style="margin-top:10px"><button class="primary" onclick="saveSyncKey()">連接我的進度</button><button onclick="useLocalOnly()">先只用這台</button></div>
+   <p id="setupMsg" class="small"></p>
+ </div>
+
+ <div class="card costguard">
+   <div class="row"><span class="pill">費用防呆</span><span class="pill"><span id="syncDot" class="syncdot"></span><span id="syncLabel">檢查中</span></span></div>
+   <p><strong>額外付費功能：OFF</strong>　沒有 OpenAI API、付費語音、Realtime AI、背景排程或自動加值。</p>
+   <p class="small">如果未來要加入任何會額外收費的功能，必須先做新版，而且要先得到你的明確同意。</p>
+ </div>
+
+ <div class="card"><h3>今天的腦力</h3><div class="mode">
+   <button onclick="setMode(this,5)">🔴 很累<br><span class="small">約 5 分鐘・1 組</span></button>
+   <button class="active" onclick="setMode(this,15)">🟡 普通<br><span class="small">約 15 分鐘・2 組</span></button>
+   <button onclick="setMode(this,25)">🟢 今天可以<br><span class="small">約 25 分鐘・3 組</span></button>
+ </div></div>
+
+ <div class="card"><div class="row">
+   <div class="metric"><span class="small">本週完成</span><b id="weekDone">0/5</b><div class="progress"><div id="weekBar" class="bar"></div></div></div>
+   <div class="metric"><span class="small">目前難度</span><b id="difficulty">3</b><span class="small">1–6</span></div>
+   <div class="metric"><span class="small">聽寫平均</span><b id="dictAvg">—</b><span class="small">近 20 題</span></div>
+   <div class="metric"><span class="small">最長自由口說</span><b id="bestSpeak">0s</b></div>
+ </div></div>
+
+ <div class="card center">
+   <div class="row" style="justify-content:center"><span id="stage" class="pill">Ready</span><span id="roundLabel" class="pill">第 0/2 組</span></div>
+   <div id="area" style="margin-top:14px"><h2>今天不用選教材</h2><p>系統會先複習快忘記的，再給一點新挑戰。</p></div>
+   <div class="row" style="justify-content:center"><button id="startBtn" class="primary hero" onclick="startSession()">開始今天</button><button id="nextBtn" class="primary hidden" onclick="nextStage()">下一步</button></div>
+ </div>
+
+ <div class="card"><h3>最近最容易卡住</h3><ul id="weakness"><li class="small">做完幾題後，這裡會自己整理。</li></ul></div>
+
+ <div class="card"><details><summary>設定與備份</summary><div class="stack" style="margin-top:12px">
+   <div class="tip"><b>學習邏輯</b><div class="small">主動回想＋間隔複習＋剛剛好的難度。低分時先縮短句子，不用一直降級。</div></div>
+   <div class="row"><button onclick="syncNow()">立即同步</button><button onclick="exportProgress()">匯出備份</button><button onclick="forgetSyncKey()">這台裝置解除同步</button></div>
+ </div></details></div>
+</div>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body></html>
