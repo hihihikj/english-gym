@@ -1,0 +1,9 @@
+{
+  "name":"English Gym",
+  "short_name":"English Gym",
+  "start_url":"./",
+  "display":"standalone",
+  "background_color":"#f7f7f5",
+  "theme_color":"#f7f7f5",
+  "description":"低摩擦英語輸出訓練：Dictation、Echo、Shadowing、Retrieval、Free Speaking"
+}
