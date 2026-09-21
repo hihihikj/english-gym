@@ -17,47 +17,15 @@
 <body>
 <div class="wrap">
  <div class="top"><div><h1>English Gym</h1><div class="small">每天一小組：聽 → 跟讀 → 回想 → 自己說</div></div><button id="installBtn">加入主畫面</button></div>
-
- <div id="setupCard" class="card hidden">
-   <h3>第一次在這台裝置使用</h3>
-   <p>請貼上你的「同步鑰匙」。只要第一次做一次，之後直接點 English Gym 就好。</p>
-   <input id="syncKeyInput" type="password" autocomplete="off" placeholder="貼上同步鑰匙" />
-   <div class="row" style="margin-top:10px"><button class="primary" onclick="saveSyncKey()">連接我的進度</button><button onclick="useLocalOnly()">先只用這台</button></div>
-   <p id="setupMsg" class="small"></p>
- </div>
-
- <div class="card costguard">
-   <div class="row"><span class="pill">費用防呆</span><span class="pill"><span id="syncDot" class="syncdot"></span><span id="syncLabel">檢查中</span></span></div>
-   <p><strong>額外付費功能：OFF</strong>　沒有 OpenAI API、付費語音、Realtime AI、背景排程或自動加值。</p>
-   <p class="small">如果未來要加入任何會額外收費的功能，必須先做新版，而且要先得到你的明確同意。</p>
- </div>
-
- <div class="card"><h3>今天的腦力</h3><div class="mode">
-   <button onclick="setMode(this,5)">🔴 很累<br><span class="small">約 5 分鐘・1 組</span></button>
-   <button class="active" onclick="setMode(this,15)">🟡 普通<br><span class="small">約 15 分鐘・2 組</span></button>
-   <button onclick="setMode(this,25)">🟢 今天可以<br><span class="small">約 25 分鐘・3 組</span></button>
- </div></div>
-
- <div class="card"><div class="row">
-   <div class="metric"><span class="small">本週完成</span><b id="weekDone">0/5</b><div class="progress"><div id="weekBar" class="bar"></div></div></div>
-   <div class="metric"><span class="small">目前難度</span><b id="difficulty">3</b><span class="small">1–6</span></div>
-   <div class="metric"><span class="small">聽寫平均</span><b id="dictAvg">—</b><span class="small">近 20 題</span></div>
-   <div class="metric"><span class="small">最長自由口說</span><b id="bestSpeak">0s</b></div>
- </div></div>
-
- <div class="card center">
-   <div class="row" style="justify-content:center"><span id="stage" class="pill">Ready</span><span id="roundLabel" class="pill">第 0/2 組</span></div>
-   <div id="area" style="margin-top:14px"><h2>今天不用選教材</h2><p>系統會先複習快忘記的，再給一點新挑戰。</p></div>
-   <div class="row" style="justify-content:center"><button id="startBtn" class="primary hero" onclick="startSession()">開始今天</button><button id="nextBtn" class="primary hidden" onclick="nextStage()">下一步</button></div>
- </div>
-
+ <div id="setupCard" class="card hidden"><h3>第一次在這台裝置使用</h3><p>請貼上你的「同步鑰匙」。只要第一次做一次，之後直接點 English Gym 就好。</p><input id="syncKeyInput" type="password" autocomplete="off" placeholder="貼上同步鑰匙" /><div class="row" style="margin-top:10px"><button class="primary" onclick="saveSyncKey()">連接我的進度</button><button onclick="useLocalOnly()">先只用這台</button></div><p id="setupMsg" class="small"></p></div>
+ <div class="card costguard"><div class="row"><span class="pill">費用防呆</span><span class="pill"><span id="syncDot" class="syncdot"></span><span id="syncLabel">檢查中</span></span></div><p><strong>額外付費功能：OFF</strong>　沒有 OpenAI API、付費語音、Realtime AI、背景排程或自動加值。</p><p class="small">如果未來要加入任何會額外收費的功能，必須先做新版，而且要先得到你的明確同意。</p></div>
+ <div class="card"><h3>今天的腦力</h3><div class="mode"><button onclick="setMode(this,5)">🔴 很累<br><span class="small">約 5 分鐘・1 組</span></button><button class="active" onclick="setMode(this,15)">🟡 普通<br><span class="small">約 15 分鐘・2 組</span></button><button onclick="setMode(this,25)">🟢 今天可以<br><span class="small">約 25 分鐘・3 組</span></button></div></div>
+ <div class="card"><div class="row"><div class="metric"><span class="small">本週完成</span><b id="weekDone">0/5</b><div class="progress"><div id="weekBar" class="bar"></div></div></div><div class="metric"><span class="small">目前難度</span><b id="difficulty">3</b><span class="small">1–6</span></div><div class="metric"><span class="small">聽寫平均</span><b id="dictAvg">—</b><span class="small">近 20 題</span></div><div class="metric"><span class="small">最長自由口說</span><b id="bestSpeak">0s</b></div></div></div>
+ <div class="card center"><div class="row" style="justify-content:center"><span id="stage" class="pill">Ready</span><span id="roundLabel" class="pill">第 0/2 組</span></div><div id="area" style="margin-top:14px"><h2>今天不用選教材</h2><p>系統會先複習快忘記的，再給一點新挑戰。</p></div><div class="row" style="justify-content:center"><button id="startBtn" class="primary hero" onclick="startSession()">開始今天</button><button id="nextBtn" class="primary hidden" onclick="nextStage()">下一步</button></div></div>
  <div class="card"><h3>最近最容易卡住</h3><ul id="weakness"><li class="small">做完幾題後，這裡會自己整理。</li></ul></div>
-
- <div class="card"><details><summary>設定與備份</summary><div class="stack" style="margin-top:12px">
-   <div class="tip"><b>學習邏輯</b><div class="small">主動回想＋間隔複習＋剛剛好的難度。低分時先縮短句子，不用一直降級。</div></div>
-   <div class="row"><button onclick="syncNow()">立即同步</button><button onclick="exportProgress()">匯出備份</button><button onclick="forgetSyncKey()">這台裝置解除同步</button></div>
- </div></details></div>
+ <div class="card"><details><summary>設定與備份</summary><div class="stack" style="margin-top:12px"><div class="tip"><b>學習邏輯</b><div class="small">主動回想＋間隔複習＋剛剛好的難度。低分時先縮短句子，不用一直降級。</div></div><div class="row"><button onclick="syncNow()">立即同步</button><button onclick="exportProgress()">匯出備份</button><button onclick="forgetSyncKey()">這台裝置解除同步</button></div></div></details></div>
 </div>
 <script src="config.js"></script>
+<script src="sentences.js"></script>
 <script src="app.js"></script>
 </body></html>
