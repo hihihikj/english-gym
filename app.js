@@ -1,0 +1,65 @@
+const SENTENCES=window.ENGLISH_GYM_SENTENCES||[];
+const CFG=window.ENGLISH_GYM_CONFIG||{};
+const API_ROOT=(CFG.apiBase||'').replace(/\/$/,'');
+const STORE_KEY='englishGymV1';
+const SYNC_KEY_NAME='englishGymSyncKey';
+const MODE_ROUNDS={5:1,15:2,25:3};
+let mode=15,round=0,stage=0,cur=null,t0=0,timer=null,rec=null,chunks=[],deferredPrompt=null,sessionLow=0,forceShort=false,dictAttempts=0;
+let st=JSON.parse(localStorage.getItem(STORE_KEY)||'{}');
+st={version:'1.0',difficulty:3,scores:[],week:{},best:0,weak:{},history:[],review:{},lastTopic:'',updatedAt:0,...st};
+
+const $=id=>document.getElementById(id);
+function esc(s){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+function weekKey(){let d=new Date(),x=(d.getDay()+6)%7;d.setDate(d.getDate()-x);return d.toISOString().slice(0,10)}
+function setSync(kind,label){let dot=$('syncDot');dot.className='syncdot'+(kind==='on'?' on':kind==='warn'?' warn':'');$('syncLabel').textContent=label}
+function dash(){
+ $('difficulty').textContent=st.difficulty;
+ let a=st.scores.slice(-20);$('dictAvg').textContent=a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length)+'%':'—';
+ let n=st.week[weekKey()]||0;$('weekDone').textContent=n+'/5';$('weekBar').style.width=Math.min(100,n/5*100)+'%';
+ $('bestSpeak').textContent=st.best+'s';
+ let w=Object.entries(st.weak).sort((a,b)=>b[1]-a[1]).slice(0,7);$('weakness').innerHTML=w.length?w.map(x=>`<li>${esc(x[0])} — ${x[1]} 次</li>`).join(''):'<li class="small">做完幾題後，這裡會自己整理。</li>';
+ $('roundLabel').textContent=`第 ${round}/${MODE_ROUNDS[mode]} 組`;
+}
+function localSave(){st.updatedAt=Date.now();localStorage.setItem(STORE_KEY,JSON.stringify(st));dash()}
+function syncKey(){return localStorage.getItem(SYNC_KEY_NAME)||''}
+function ingestKeyFromHash(){let p=new URLSearchParams(location.hash.replace(/^#/,'')),k=p.get('key');if(k){localStorage.setItem(SYNC_KEY_NAME,k);history.replaceState(null,'',location.pathname+location.search);return true}return false}
+async function api(path,opts={}){let k=syncKey();if(!k)throw Error('NO_KEY');let headers={...(opts.headers||{}),'X-Sync-Key':k};if(opts.body)headers['Content-Type']='application/json';let r=await fetch(API_ROOT+path,{...opts,headers});if(r.status===401)throw Error('BAD_KEY');if(!r.ok)throw Error('HTTP_'+r.status);return r.json()}
+function mergeState(local,cloud){if(!cloud)return local;return (cloud.updatedAt||0)>(local.updatedAt||0)?cloud:local}
+async function bootCloud(){ingestKeyFromHash();if(!syncKey()){$('setupCard').classList.remove('hidden');setSync('off','只存在這台');return}try{setSync('warn','同步中…');let d=await api('/api/state');if(d.state){st=mergeState(st,d.state);localStorage.setItem(STORE_KEY,JSON.stringify(st))}else await cloudSave();$('setupCard').classList.add('hidden');setSync('on','雲端已同步');dash()}catch(e){if(e.message==='BAD_KEY'){$('setupCard').classList.remove('hidden');setSync('off','同步鑰匙不正確')}else setSync('warn','離線・先存這台')}}
+async function cloudSave(){if(!syncKey())return;try{await api('/api/state',{method:'POST',body:JSON.stringify({state:st})});setSync('on','雲端已同步')}catch{setSync('warn','待同步')}}
+async function save(){localSave();await cloudSave()}
+async function syncNow(){if(!syncKey()){$('setupCard').classList.remove('hidden');return}await bootCloud();await cloudSave()}
+function saveSyncKey(){let v=$('syncKeyInput').value.trim();if(!v)return;localStorage.setItem(SYNC_KEY_NAME,v);$('setupMsg').textContent='正在連接…';bootCloud()}
+function useLocalOnly(){$('setupCard').classList.add('hidden');setSync('off','只存在這台')}
+function forgetSyncKey(){if(!confirm('確定只解除這台裝置的同步嗎？雲端資料不會刪除。'))return;localStorage.removeItem(SYNC_KEY_NAME);$('setupCard').classList.remove('hidden');setSync('off','只存在這台')}
+
+function setMode(b,m){mode=m;document.querySelectorAll('.mode button').forEach(x=>x.classList.remove('active'));b.classList.add('active');round=0;dash()}
+function dueItems(){let today=new Date().toISOString().slice(0,10);return SENTENCES.filter(x=>st.review[x.id]?.due<=today)}
+function choose(){let due=dueItems().filter(x=>Math.abs(x.d-st.difficulty)<=1);let pool=due.length?due:SENTENCES.filter(x=>Math.abs(x.d-st.difficulty)<=1);if(forceShort&&pool.length){let min=Math.min(...pool.map(x=>x.t.split(' ').length));pool=pool.filter(x=>x.t.split(' ').length<=min+3)}let varied=pool.filter(x=>x.topic!==st.lastTopic);if(varied.length)pool=varied;cur=pool[Math.floor(Math.random()*pool.length)]||SENTENCES[0];st.lastTopic=cur?.topic||'';dictAttempts=0}
+function voice(){let vs=speechSynthesis.getVoices();return vs.find(v=>/^en-(US|GB)/.test(v.lang)&&/Google|Samantha|Daniel|Microsoft|Natural/i.test(v.name))||vs.find(v=>/^en-(US|GB)/.test(v.lang))||vs.find(v=>v.lang.startsWith('en'))}
+function speak(t,r=.9){speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=r;let v=voice();if(v)u.voice=v;speechSynthesis.speak(u)}
+function norm(s){return s.toLowerCase().replace(/[^a-z0-9\s']/g,'').replace(/\s+/g,' ').trim()}
+function similarity(a,b){a=norm(a).split(' ').filter(Boolean);b=norm(b).split(' ').filter(Boolean);let m=a.length,n=b.length,d=Array.from({length:m+1},()=>Array(n+1).fill(0));for(let i=0;i<=m;i++)d[i][0]=i;for(let j=0;j<=n;j++)d[0][j]=j;for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return Math.max(0,Math.round((1-d[m][n]/Math.max(m,n,1))*100))}
+function scheduleReview(id,score){let r=st.review[id]||{reps:0,interval:1,due:''};if(score<70){r.reps=0;r.interval=1}else if(score<85){r.reps++;r.interval=Math.min(3,Math.max(1,r.interval))}else{r.reps++;r.interval=[1,3,7,14,30][Math.min(r.reps,4)]}let d=new Date();d.setDate(d.getDate()+r.interval);r.due=d.toISOString().slice(0,10);st.review[id]=r}
+function adapt(score){if(score<55){sessionLow++;if(sessionLow>=2)forceShort=true}else{sessionLow=0;forceShort=false}let r=st.scores.slice(-5);if(r.length<5)return;let av=r.reduce((x,y)=>x+y,0)/r.length;if(av>=88)st.difficulty=Math.min(6,st.difficulty+1);else if(av<52)st.difficulty=Math.max(1,st.difficulty-1)}
+function hintFor(text){let words=norm(text).split(' ').filter(w=>w.length>3);return words.slice(0,3).map(w=>w[0]+'…').join('   ')}
+
+function startSession(){round=1;stage=1;choose();render()}
+function render(){dash();let a=$('area'),next=$('nextBtn');$('startBtn').classList.add('hidden');next.classList.add('hidden');
+ if(stage===1){$('stage').textContent='1/4 聽寫';a.innerHTML=`<div class="stepTitle">先聽，不看答案</div><h2>Dictation</h2><p>最多重播 3 次。先寫你真的聽到的。</p><div class="row" style="justify-content:center"><button onclick="speak(cur.t,.88)">▶ 播放</button><button onclick="speak(cur.t,.72)">🐢 慢速</button></div><textarea id="dict" placeholder="輸入你聽到的英文"></textarea><button class="primary" onclick="checkDict()">檢查</button><div id="result"></div>`}
+ if(stage===2){$('stage').textContent='2/4 跟讀';a.innerHTML=`<div class="stepTitle">先 Echo，再 Shadowing</div><h2>跟著說</h2><p class="sentence">${esc(cur.t)}</p><div class="row" style="justify-content:center"><button onclick="speak(cur.t,.86)">▶ 原音</button><button onclick="record()">⏺ 錄自己</button><button onclick="stopRec()">⏹ 停止</button></div><audio id="play" controls class="hidden" style="width:100%;margin-top:12px"></audio><p class="small">第一遍：聽完再說。第二遍：原音開始後約 1 秒跟著說。</p>`;next.classList.remove('hidden')}
+ if(stage===3){$('stage').textContent='3/4 回想';a.innerHTML=`<div class="stepTitle">不背原句</div><h2>Retrieval</h2><p>把文字遮掉，用自己的英文說出同一個意思。</p><textarea placeholder="真的卡住時，只寫 3–5 個關鍵字"></textarea><div class="tip small">努力把答案「叫回來」比一直重看更能幫助記憶。</div>`;next.classList.remove('hidden')}
+ if(stage===4){let target=mode===5?20:mode===15?45:75;$('stage').textContent='4/4 自己說';a.innerHTML=`<div class="stepTitle">把英文用在自己身上</div><h2>Free Speaking</h2><p><b>How does this sentence relate to your life or your goals?</b></p><div id="tm" style="font-size:30px;font-weight:700">0s</div><p class="small">今天目標約 ${target} 秒。不追求完美，只求不停下來。</p><div class="row" style="justify-content:center"><button class="primary" onclick="goTimer()">開始計時</button><button onclick="stopTimer()">停止</button></div>`;next.textContent=round<MODE_ROUNDS[mode]?'下一組':'完成今天';next.classList.remove('hidden')}}
+async function checkDict(){let v=$('dict').value,s=similarity(v,cur.t);dictAttempts++;if(s<55&&dictAttempts===1){$('result').innerHTML=`<div class="tip"><b>先不給答案，再試一次。</b><br><span class="small">提示：${esc(hintFor(cur.t))}</span></div>`;return}st.scores.push(s);let got=new Set(norm(v).split(' '));norm(cur.t).split(' ').filter(w=>w.length>3&&!got.has(w)).forEach(w=>st.weak[w]=(st.weak[w]||0)+1);scheduleReview(cur.id,s);adapt(s);await save();$('result').innerHTML=`<p style="font-size:28px;font-weight:700" class="${s>=80?'good':s<55?'warn':''}">${s}%</p><p><b>原句：</b> ${esc(cur.t)}</p><p class="small">${s>=88?'很好。這句會隔更久再出現。':s>=70?'難度剛好，幾天後再複習。':'沒關係。這句會更快回來；連續卡住時下一題會先變短。'}</p>`;$('nextBtn').classList.remove('hidden')}
+async function record(){try{let s=await navigator.mediaDevices.getUserMedia({audio:true});chunks=[];rec=new MediaRecorder(s);rec.ondataavailable=e=>chunks.push(e.data);rec.onstop=()=>{let p=$('play');p.src=URL.createObjectURL(new Blob(chunks,{type:'audio/webm'}));p.classList.remove('hidden');s.getTracks().forEach(t=>t.stop())};rec.start()}catch{alert('請允許麥克風。錄音只留在這台裝置，不會上傳。')}}
+function stopRec(){if(rec&&rec.state!=='inactive')rec.stop()}
+function goTimer(){clearInterval(timer);t0=Date.now();timer=setInterval(()=>{let el=$('tm');if(el)el.textContent=Math.floor((Date.now()-t0)/1000)+'s'},250)}
+async function stopTimer(){if(!t0)return;clearInterval(timer);let sec=Math.floor((Date.now()-t0)/1000);t0=0;st.best=Math.max(st.best,sec);await save()}
+async function nextStage(){if(stage<4){stage++;render();return}await stopTimer();st.history.push({date:new Date().toISOString(),difficulty:st.difficulty,mode,sentenceId:cur.id,score:st.scores.at(-1)});if(st.history.length>500)st.history=st.history.slice(-500);if(round<MODE_ROUNDS[mode]){round++;stage=1;choose();await save();render();return}let k=weekKey();st.week[k]=Math.min(7,(st.week[k]||0)+1);await save();$('stage').textContent='Done';$('area').innerHTML='<h2>✅ 今天完成</h2><p>做到這裡就夠了。不補昨天、不追連勝。</p>';$('nextBtn').classList.add('hidden');let b=$('startBtn');b.textContent='再做一次（可選）';b.classList.remove('hidden')}
+function exportProgress(){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(st,null,2)],{type:'application/json'}));a.download='english-gym-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+
+window.addEventListener('online',()=>syncNow());
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('installBtn').style.display='block'});
+$('installBtn').addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('installBtn').style.display='none'});
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+dash();bootCloud();
