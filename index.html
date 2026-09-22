@@ -17,37 +17,20 @@
 <body>
 <div class="wrap">
  <div class="top"><div><h1>English Gym</h1><div class="small">私人英文輸出訓練系統</div></div><button id="installBtn">加入主畫面</button></div>
-
  <div id="authCard" class="card authbox">
-   <h2>🔐 私人登入</h2>
-   <p class="security">只有授權的主人帳號能讀寫學習進度。其他帳號即使登入，也會被資料庫拒絕。</p>
-   <input id="authEmail" type="email" autocomplete="username" placeholder="Email" />
-   <input id="authPassword" type="password" autocomplete="current-password" placeholder="密碼（建立帳號時至少 10 個字元）" />
-   <div class="row" style="margin-top:10px"><button class="primary" onclick="signIn()">登入</button><button onclick="signUp()">第一次使用：建立帳號</button></div>
-   <p id="authMsg" class="small">第一次使用請建立帳號；若收到 Email 驗證信，先完成驗證再回來登入。</p>
+   <h2>🔐 私人登入</h2><p class="security">只有授權的主人帳號能讀寫學習進度。其他帳號即使登入，也會被資料庫拒絕。</p>
+   <input id="authEmail" type="email" autocomplete="username" placeholder="Email" /><input id="authPassword" type="password" autocomplete="current-password" placeholder="密碼（建立帳號時至少 10 個字元）" />
+   <div class="row" style="margin-top:10px"><button class="primary" onclick="signIn()">登入</button><button onclick="signUp()">第一次使用：建立帳號</button></div><p id="authMsg" class="small">第一次使用請建立帳號；若收到 Email 驗證信，先完成驗證再回來登入。</p>
  </div>
-
  <div id="appRoot" class="hidden">
-  <div class="card costguard"><div class="row"><span class="pill">費用防呆</span><span class="pill"><span id="syncDot" class="syncdot"></span><span id="syncLabel">檢查中</span></span><span class="pill">登入：<span id="accountEmail"></span></span></div><p><strong>額外付費功能：OFF</strong>　沒有 OpenAI API、付費語音、Realtime AI、背景排程或自動加值。</p><p class="small">你的進度只存在這台裝置與你自己的 Supabase 使用者資料列。錄音不會上傳。</p></div>
-
+  <div class="card costguard"><div class="row"><span class="pill">費用防呆</span><span class="pill"><span id="syncDot" class="syncdot"></span><span id="syncLabel">檢查中</span></span><span class="pill">登入：<span id="accountEmail"></span></span></div><p><strong>額外付費功能：OFF</strong>　沒有 OpenAI API、付費語音、Realtime AI、背景排程或自動加值。</p><p class="small">你的進度只存在這台裝置與你自己的 Supabase 使用者資料列。錄音不會上傳；語音轉文字依瀏覽器能力執行。</p></div>
   <div class="card"><h3>今天的腦力</h3><div class="mode"><button onclick="setMode(this,5)">🔴 很累<br><span class="small">約 5 分鐘・1 組</span></button><button class="active" onclick="setMode(this,15)">🟡 普通<br><span class="small">約 15 分鐘・2 組</span></button><button onclick="setMode(this,25)">🟢 今天可以<br><span class="small">約 25 分鐘・3 組</span></button></div></div>
-
-  <div class="card"><div class="row">
-    <div class="metric"><span class="small">本週完成</span><b id="weekDone">0/5</b><div class="progress"><div id="weekBar" class="bar"></div></div></div>
-    <div class="metric"><span class="small">目前難度</span><b id="difficulty">3</b><span class="small">1–6</span></div>
-    <div class="metric"><span class="small">聽寫平均</span><b id="dictAvg">—</b><span class="small">近 20 題</span></div>
-    <div class="metric"><span class="small">最長自由口說</span><b id="bestSpeak">0s</b></div>
-  </div></div>
-
+  <div class="card"><div class="row"><div class="metric"><span class="small">本週完成</span><b id="weekDone">0/5</b><div class="progress"><div id="weekBar" class="bar"></div></div><div class="metric"><span class="small">目前難度</span><b id="difficulty">3</b><span class="small">1–6</span></div><div class="metric"><span class="small">聽寫平均</span><b id="dictAvg">—</b><span class="small">近 20 題</span></div><div class="metric"><span class="small">最長自由口說</span><b id="bestSpeak">0s</b></div></div></div>
   <div class="card center"><div class="row" style="justify-content:center"><span id="stage" class="pill">Ready</span><span id="roundLabel" class="pill">第 0/2 組</span></div><div id="area" style="margin-top:14px"><h2>今天不用選教材</h2><p>系統會先複習快忘記的，再給一點新挑戰。</p></div><div class="row" style="justify-content:center"><button id="startBtn" class="primary hero" onclick="startSession()">開始今天</button><button id="nextBtn" class="primary hidden" onclick="nextStage()">下一步</button></div></div>
-
   <div class="card"><h3>最近最容易卡住</h3><ul id="weakness"><li class="small">做完幾題後，這裡會自己整理。</li></ul></div>
-
   <div class="card"><details><summary>帳號、安全與備份</summary><div class="stack" style="margin-top:12px"><div class="tip"><b>安全設計</b><div class="small">Supabase Auth + Row Level Security。未登入者不能讀資料；登入者也只能讀自己的 user_id；另外再限制為主人 Email。</div></div><input id="newPassword" type="password" autocomplete="new-password" placeholder="要改密碼時，在這裡輸入新密碼（至少 12 字元）"/><div id="passwordMsg" class="small"></div><div class="row"><button onclick="changePassword()">更新密碼</button><button onclick="syncNow()">立即同步</button><button onclick="exportProgress()">匯出備份</button><button onclick="signOut()">安全登出</button></div></div></details></div>
  </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js"></script>
-<script src="sentences.js"></script>
-<script src="app.js"></script>
+<script src="config.js"></script><script src="sentences.js"></script><script src="app.js"></script><script src="feedback.js"></script>
 </body></html>
