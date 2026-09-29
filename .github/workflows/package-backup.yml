@@ -1,0 +1,22 @@
+name: Package English Gym backup
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove packaging workflow from backup copy
+        run: rm -rf .github
+      - name: Package current source
+        run: zip -r English_Gym_v1.4_SECURE_FREE_正式版.zip . -x '.git/*'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: english-gym-v1.4-backup
+          path: English_Gym_v1.4_SECURE_FREE_正式版.zip
+          if-no-files-found: error
+          retention-days: 1
