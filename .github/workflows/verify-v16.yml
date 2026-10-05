@@ -1,0 +1,37 @@
+name: verify-v16
+on:
+  push:
+    paths:
+      - 'curriculum.js'
+      - 'habits.js'
+      - 'index.html'
+      - 'config.js'
+      - 'sw.js'
+      - '.github/workflows/verify-v16.yml'
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: JS syntax
+        run: |
+          node --check app.js
+          node --check feedback.js
+          node --check reading.js
+          node --check habits.js
+          node --check ielts.js
+          node --check curriculum.js
+          node --check config.js
+          node --check sw.js
+      - name: v1.6 integration smoke
+        run: |
+          grep -q 'curriculum.js' index.html
+          grep -q 'english-gym-v1-6' sw.js
+          grep -q 'C1 School Year' curriculum.js
+          grep -q 'PDF 29–43' curriculum.js
+          grep -q "course:'📘'" habits.js
+          grep -q 'version: "1.6"' config.js
