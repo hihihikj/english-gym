@@ -39,19 +39,19 @@ function hRender(){
   const hs=hState(),box=document.getElementById('habitPanel');if(!box)return;
   const days=hWeekDates(),today=hDateKey(),activeDays=days.filter(d=>hActiveTypes(hs.activities[hDateKey(d)]).length).length;
   const names=['一','二','三','四','五','六','日'];
-  const icons={gym:'🎙️',reading:'📖',recall:'🧠',ielts:'🎯'};
+  const icons={gym:'🎙️',reading:'📖',recall:'🧠',ielts:'🎯',course:'📘'};
   const tiles=days.map((d,i)=>{
     const k=hDateKey(d),types=hActiveTypes(hs.activities[k]),inside=types.length?types.map(t=>icons[t]||'✓').join(''):'·';
     return `<div class="habitDay ${types.length?'done':''} ${k===today?'today':''}"><span>週${names[i]}</span><b>${inside}</b></div>`
   }).join('');
   const cue=esc(hs.plan.cue||'完成一個固定日常動作後'),action=hs.plan.action||'gym5';
   box.innerHTML=`
-    <div class="row" style="justify-content:space-between;align-items:flex-start"><div><span class="pill">v1.5・過程優先</span><h2 style="margin:8px 0 4px">${hGrowth(activeDays)} 本週英文足跡</h2><p class="small" style="margin:0">不是連勝。空白日不扣分；重新出現就繼續。</p></div><div class="metric miniMetric"><span class="small">本週出現</span><b>${activeDays}/5</b><span class="small">天</span></div></div>
+    <div class="row" style="justify-content:space-between;align-items:flex-start"><div><span class="pill">v1.6・過程優先</span><h2 style="margin:8px 0 4px">${hGrowth(activeDays)} 本週英文足跡</h2><p class="small" style="margin:0">不是連勝。空白日不扣分；重新出現就繼續。</p></div><div class="metric miniMetric"><span class="small">本週出現</span><b>${activeDays}/5</b><span class="small">天</span></div></div>
     <div class="habitWeek">${tiles}</div>
     <div class="tip"><b>今天只專注 1 件事：</b> ${esc(hTopFocus())}</div>
     <details style="margin-top:12px"><summary><b>⚓ 我的「看到線索就開始」計畫</b></summary>
       <div class="stack" style="margin-top:12px"><label class="small">當我……</label><input id="habitCue" value="${cue}" maxlength="90" />
-      <label class="small">我就先做……</label><select id="habitAction"><option value="gym5" ${action==='gym5'?'selected':''}>English Gym 5 分鐘</option><option value="reading" ${action==='reading'?'selected':''}>Reading 10</option><option value="recall" ${action==='recall'?'selected':''}>Phrase Recall 3</option><option value="ielts" ${action==='ielts'?'selected':''}>IELTS 今日建議課</option></select>
+      <label class="small">我就先做……</label><select id="habitAction"><option value="gym5" ${action==='gym5'?'selected':''}>English Gym 5 分鐘</option><option value="reading" ${action==='reading'?'selected':''}>Reading 10</option><option value="recall" ${action==='recall'?'selected':''}>Phrase Recall 3</option><option value="course" ${action==='course'?'selected':''}>📘 今日 Sussex 正課</option><option value="ielts" ${action==='ielts'?'selected':''}>IELTS 今日建議課</option></select>
       <div class="row"><button onclick="hSavePlan()">儲存這個線索</button><button class="primary" onclick="hStartPlan()">現在直接開始</button></div>
       <p class="small">例：刷完牙後／喝完第一杯咖啡後／坐到書桌前。固定線索比只靠「等有動力」更容易啟動。</p></div></details>`;
   hRenderRecallHome();
@@ -66,7 +66,7 @@ function hStartGym5(){
 }
 function hStartPlan(){
   const action=document.getElementById('habitAction')?.value||hState().plan.action||'gym5';
-  if(action==='reading')openReading10();else if(action==='recall')hStartRecall();else if(action==='ielts'&&typeof iOpen==='function')iOpen(iRecommend());else hStartGym5();
+  if(action==='reading')openReading10();else if(action==='recall')hStartRecall();else if(action==='course'&&typeof c1Inject==='function'){c1Inject();document.getElementById('c1SchoolHome')?.scrollIntoView({behavior:'smooth',block:'start'})}else if(action==='ielts'&&typeof iOpen==='function')iOpen(iRecommend());else hStartGym5();
 }
 function hPhraseDueList(){
   const phrases=st.reading10?.phrases||[],rv=hState().phraseReview,today=hDateKey();
