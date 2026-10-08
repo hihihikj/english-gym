@@ -1,0 +1,23 @@
+name: verify-v17
+on:
+  push:
+    paths:
+      - 'curriculum.js'
+      - 'config.js'
+      - 'sw.js'
+      - '.github/workflows/verify-v17.yml'
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '20'}
+      - run: |
+          node --check curriculum.js
+          node --check config.js
+          node --check sw.js
+          grep -q 'v1.7・低壓 C1' curriculum.js
+          grep -q 'Session 1/8' curriculum.js || true
+          grep -q 'english-gym-v1-7' sw.js
+          grep -q 'version: "1.7"' config.js
