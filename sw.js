@@ -1,4 +1,4 @@
-const CACHE='english-gym-v1-6';
+const CACHE='english-gym-v1-7';
 const ASSETS=['./','index.html','app.js','feedback.js','reading.js','habits.js','ielts.js','curriculum.js','config.js','sentences.js','manifest.webmanifest'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).catch(()=>{})));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))));
