@@ -1,0 +1,26 @@
+name: verify-v18
+on:
+  push:
+    paths:
+      - 'index.html'
+      - 'app.js'
+      - 'config.js'
+      - 'sw.js'
+      - '.github/workflows/verify-v18.yml'
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '20'}
+      - run: |
+          node --check app.js
+          node --check config.js
+          node --check sw.js
+          grep -q 'requestPasswordReset' app.js
+          grep -q 'finishRecovery' app.js
+          grep -q 'PASSWORD_RECOVERY' app.js
+          grep -q '忘記密碼' index.html
+          grep -q 'english-gym-v1-8' sw.js
+          grep -q 'version: "1.8"' config.js
