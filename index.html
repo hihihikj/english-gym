@@ -20,7 +20,14 @@
  <div id="authCard" class="card authbox">
    <h2>🔐 私人登入</h2><p class="security">只有授權的主人帳號能讀寫學習進度。其他帳號即使登入，也會被資料庫拒絕。</p>
    <input id="authEmail" type="email" autocomplete="username" placeholder="Email" /><input id="authPassword" type="password" autocomplete="current-password" placeholder="密碼（建立帳號時至少 10 個字元）" />
-   <div class="row" style="margin-top:10px"><button class="primary" onclick="signIn()">登入</button><button onclick="signUp()">第一次使用：建立帳號</button></div><p id="authMsg" class="small">第一次使用請建立帳號；若收到 Email 驗證信，先完成驗證再回來登入。</p>
+   <div class="row" style="margin-top:10px"><button class="primary" onclick="signIn()">登入</button><button onclick="requestPasswordReset()">忘記密碼</button><button onclick="signUp()">第一次使用：建立帳號</button></div>
+   <div id="recoveryBox" class="hidden" style="margin-top:14px">
+     <div class="tip"><b>設定新密碼</b><div class="small">請輸入至少 12 個字元的新密碼。這不會刪除你的學習進度。</div></div>
+     <input id="recoveryPassword" type="password" autocomplete="new-password" placeholder="新密碼（至少 12 個字元）" />
+     <input id="recoveryPassword2" type="password" autocomplete="new-password" placeholder="再輸入一次新密碼" />
+     <button class="primary" style="margin-top:8px" onclick="finishRecovery()">設定新密碼</button>
+   </div>
+   <p id="authMsg" class="small">忘記密碼時，先輸入 Email，再按「忘記密碼」。</p>
  </div>
  <div id="appRoot" class="hidden">
   <div class="card costguard"><div class="row"><span class="pill">費用防呆</span><span class="pill"><span id="syncDot" class="syncdot"></span><span id="syncLabel">檢查中</span></span><span class="pill">登入：<span id="accountEmail"></span></span></div><p><strong>額外付費功能：OFF</strong>　沒有 OpenAI API、付費語音、Realtime AI、背景排程或自動加值。</p><p class="small">你的進度只存在這台裝置與你自己的 Supabase 使用者資料列。錄音不會上傳；語音轉文字依瀏覽器能力執行。</p></div>
