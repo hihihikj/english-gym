@@ -3,7 +3,7 @@ const CFG=window.ENGLISH_GYM_CONFIG||{};
 const SB=window.supabase.createClient(CFG.supabaseUrl,CFG.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 const STORE_KEY='englishGymV1';
 const MODE_ROUNDS={5:1,15:2,25:3};
-let mode=15,round=0,stage=0,cur=null,t0=0,timer=null,rec=null,chunks=[],deferredPrompt=null,sessionLow=0,forceShort=false,dictAttempts=0,currentUser=null;
+let mode=15,round=0,stage=0,cur=null,t0=0,timer=null,rec=null,chunks=[],deferredPrompt=null,sessionLow=0,forceShort=false,dictAttempts=0,currentUser=null,recoveryMode=false;
 let st=JSON.parse(localStorage.getItem(STORE_KEY)||'{}');
 st={version:'1.1',difficulty:3,scores:[],week:{},best:0,weak:{},history:[],review:{},lastTopic:'',updatedAt:0,...st};
 const $=id=>document.getElementById(id);
@@ -20,7 +20,33 @@ async function showAppForUser(user){currentUser=user;const ok=await isOwner();if
 async function bootAuth(){localStorage.removeItem('englishGymSyncKey');const {data:{session}}=await SB.auth.getSession();if(session?.user){try{await showAppForUser(session.user)}catch(e){setAuthMsg('登入驗證暫時失敗，請重新整理。',true)}}else{$('authCard').classList.remove('hidden');$('appRoot').classList.add('hidden')}}
 async function signIn(){const email=$('authEmail').value.trim();const password=$('authPassword').value;if(!email||!password){setAuthMsg('請輸入 Email 和密碼。',true);return}setAuthMsg('正在登入…');const {data,error}=await SB.auth.signInWithPassword({email,password});if(error){setAuthMsg('登入失敗：'+error.message,true);return}try{await showAppForUser(data.user)}catch(e){setAuthMsg('登入後安全檢查失敗。',true)}}
 async function signUp(){const email=$('authEmail').value.trim();const password=$('authPassword').value;if(!email||password.length<10){setAuthMsg('請輸入 Email，密碼至少 10 個字元。',true);return}setAuthMsg('正在建立帳號…');const {data,error}=await SB.auth.signUp({email,password});if(error){setAuthMsg('建立帳號失敗：'+error.message,true);return}if(data.session){await showAppForUser(data.user);setAuthMsg('帳號已建立。')}else setAuthMsg('已寄出 Email 驗證信。請到信箱點確認，再回這個網頁登入。')}
-async function signOut(){await SB.auth.signOut();currentUser=null;$('appRoot').classList.add('hidden');$('authCard').classList.remove('hidden');setAuthMsg('已安全登出。')}
+async function signOut(){await SB.auth.signOut();currentUser=null;recoveryMode=false;$('appRoot').classList.add('hidden');$('authCard').classList.remove('hidden');$('recoveryBox')?.classList.add('hidden');setAuthMsg('已安全登出。')}
+async function requestPasswordReset(){
+  const email=$('authEmail').value.trim();
+  if(!email){setAuthMsg('先輸入你建立 English Gym 時使用的 Email。',true);return}
+  setAuthMsg('正在寄出重設密碼信…');
+  const redirectTo=window.location.origin+window.location.pathname;
+  let {error}=await SB.auth.resetPasswordForEmail(email,{redirectTo});
+  if(error&&/redirect/i.test(error.message||'')){({error}=await SB.auth.resetPasswordForEmail(email))}
+  if(error){setAuthMsg('無法寄出重設信：'+error.message,true);return}
+  setAuthMsg('✅ 重設密碼信已寄出。請打開信件並點連結；回到 English Gym 後會讓你設定新密碼。');
+}
+async function finishRecovery(){
+  const p=$('recoveryPassword')?.value||'',p2=$('recoveryPassword2')?.value||'';
+  if(p.length<12){setAuthMsg('新密碼至少 12 個字元。',true);return}
+  if(p!==p2){setAuthMsg('兩次輸入的密碼不一致。',true);return}
+  setAuthMsg('正在更新密碼…');
+  const {error}=await SB.auth.updateUser({password:p});
+  if(error){setAuthMsg('更新失敗：'+error.message,true);return}
+  recoveryMode=false;
+  $('recoveryBox')?.classList.add('hidden');
+  if($('recoveryPassword'))$('recoveryPassword').value='';
+  if($('recoveryPassword2'))$('recoveryPassword2').value='';
+  history.replaceState({},document.title,location.pathname);
+  const {data:{user}}=await SB.auth.getUser();
+  setAuthMsg('✅ 密碼已更新。');
+  if(user)await showAppForUser(user);
+}
 async function changePassword(){const p=$('newPassword').value;if(!p||p.length<12){$('passwordMsg').textContent='新密碼至少 12 個字元。';return}const {error}=await SB.auth.updateUser({password:p});$('passwordMsg').textContent=error?'更新失敗：'+error.message:'✅ 密碼已更新。';if(!error)$('newPassword').value=''}
 
 async function cloudLoad(){if(!currentUser)return;const {data,error}=await SB.from('english_gym_user_state').select('state,updated_at').eq('user_id',currentUser.id).maybeSingle();if(error){setSync('warn','同步失敗');throw error}if(data?.state){st=mergeState(st,data.state);localStorage.setItem(STORE_KEY,JSON.stringify(st))}else{await cloudSave()}setSync('on','雲端已同步')}
@@ -47,4 +73,14 @@ function goTimer(){clearInterval(timer);t0=Date.now();timer=setInterval(()=>{let
 async function stopTimer(){if(!t0)return;clearInterval(timer);let sec=Math.floor((Date.now()-t0)/1000);t0=0;st.best=Math.max(st.best,sec);await save()}
 async function nextStage(){if(stage<4){stage++;render();return}await stopTimer();st.history.push({date:new Date().toISOString(),difficulty:st.difficulty,mode,sentenceId:cur.id,score:st.scores.at(-1)});if(st.history.length>500)st.history=st.history.slice(-500);if(round<MODE_ROUNDS[mode]){round++;stage=1;choose();await save();render();return}let k=weekKey();st.week[k]=Math.min(7,(st.week[k]||0)+1);await save();$('stage').textContent='Done';$('area').innerHTML='<h2>✅ 今天完成</h2><p>做到這裡就夠了。不補昨天、不追連勝。</p>';$('nextBtn').classList.add('hidden');let b=$('startBtn');b.textContent='再做一次（可選）';b.classList.remove('hidden')}
 function exportProgress(){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(st,null,2)],{type:'application/json'}));a.download='english-gym-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
-window.addEventListener('online',()=>syncNow());window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('installBtn').style.display='block'});$('installBtn').addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('installBtn').style.display='none'});if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));SB.auth.onAuthStateChange((_event,session)=>{if(session?.user&&!currentUser)showAppForUser(session.user).catch(()=>{});if(!session){currentUser=null;$('appRoot').classList.add('hidden');$('authCard').classList.remove('hidden')}});dash();bootAuth();
+window.addEventListener('online',()=>syncNow());window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('installBtn').style.display='block'});$('installBtn').addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('installBtn').style.display='none'});if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));SB.auth.onAuthStateChange((event,session)=>{
+  if(event==='PASSWORD_RECOVERY'){
+    recoveryMode=true;currentUser=session?.user||null;
+    $('appRoot').classList.add('hidden');$('authCard').classList.remove('hidden');$('recoveryBox')?.classList.remove('hidden');
+    setAuthMsg('重設連結已驗證。請設定你的新密碼。');
+    setTimeout(()=>$('recoveryPassword')?.focus(),50);
+    return;
+  }
+  if(session?.user&&!currentUser&&!recoveryMode)showAppForUser(session.user).catch(()=>{});
+  if(!session){currentUser=null;$('appRoot').classList.add('hidden');$('authCard').classList.remove('hidden')}
+});dash();bootAuth();
