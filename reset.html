@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>English Gym｜重設密碼</title>
+<style>body{font-family:system-ui,-apple-system,sans-serif;background:#f7f7f5;color:#20211f;margin:0}.wrap{max-width:490px;margin:48px auto;padding:20px}.card{background:white;border:1px solid #ddd;border-radius:18px;padding:24px}label{display:block;margin:17px 0 6px}input,button{box-sizing:border-box;width:100%;padding:13px;border-radius:10px;border:1px solid #aaa;font-size:16px}button{background:#20211f;color:#fff;margin-top:14px;cursor:pointer}.small{font-size:13px;color:#666;line-height:1.5}.status{white-space:pre-wrap;line-height:1.5;margin-top:15px}.error{color:#aa2020}.ok{color:#156d42}.hidden{display:none}a{color:inherit}</style></head>
+<body><main class="wrap"><div class="card"><h1>English Gym</h1><h2 id="heading">找回密碼</h2><p class="small">請使用建立 English Gym 帳號時的電子郵件。重設密碼不會刪除既有學習紀錄。</p>
+<section id="request"><label for="email">註冊 Email</label><input id="email" type="email" autocomplete="email" placeholder="name@example.com"><button id="send" type="button">寄送重設密碼信</button><p class="small">如果沒有收到信，請查看垃圾郵件。請勿建立新帳號。</p></section>
+<section id="change" class="hidden"><label for="pass">新密碼（至少 12 字元）</label><input id="pass" type="password" autocomplete="new-password"><label for="pass2">再輸入一次新密碼</label><input id="pass2" type="password" autocomplete="new-password"><button id="apply" type="button">確認重設密碼</button></section>
+<div id="status" class="status" role="status" aria-live="polite"></div><p class="small"><a href="./">回 English Gym</a></p></div></main>
+<script>
+(function(){
+'use strict';
+const base='https://seqoovfrpshsyqasxcqc.supabase.co';
+const key='sb_publishable_G4qIx-xFCmkyYDT3eWybeg_2O2rJLlK';
+const by=id=>document.getElementById(id);
+const message=(s,bad=false)=>{by('status').textContent=s;by('status').className='status '+(bad?'error':'ok')};
+const params=new URLSearchParams(location.hash.substring(1));
+const query=new URLSearchParams(location.search);
+const access=params.get('access_token');
+const typ=params.get('type');
+let token=access;
+if(location.hash||location.search){history.replaceState(null,'',location.pathname)}
+async function api(path,method,body,bearer){
+ const h={'apikey':key,'Content-Type':'application/json'};
+ if(bearer)h.Authorization='Bearer '+bearer;
+ const resp=await fetch(base+'/auth/v1/'+path,{method,headers:h,body:JSON.stringify(body)});
+ let json={};try{json=await resp.json()}catch{}
+ if(!resp.ok)throw new Error(json.msg||json.error_description||json.message||json.error||'服務暫時無法使用（HTTP '+resp.status+'）');
+ return json;
+}
+if(token&&typ==='recovery'){
+ by('heading').textContent='設定新密碼';by('request').classList.add('hidden');by('change').classList.remove('hidden');
+ message('重設連結已開啟。請輸入新密碼。');
+}else if(params.has('error')||query.has('error')){
+ message('重設連結可能已過期。請重新輸入 Email 申請一次。',true);
+}
+by('send').addEventListener('click',async()=>{
+ const email=by('email').value.trim();if(!/^\S+@\S+\.\S+$/.test(email)){message('請先輸入完整的 Email。',true);return}
+ const btn=by('send');btn.disabled=true;message('正在寄送重設信…');
+ try{
+  const redirect=location.origin+location.pathname;
+  await api('recover?redirect_to='+encodeURIComponent(redirect),'POST',{email});
+  message('✅ 已送出重設申請。請查看該 Email 收件匣與垃圾郵件。收到信後點連結，回來設定新密碼。');
+ }catch(e){message('寄送失敗：'+e.message+'。若顯示 redirect 錯誤，請告訴我畫面文字。',true)}
+ finally{btn.disabled=false}
+});
+by('apply').addEventListener('click',async()=>{
+ const p=by('pass').value,p2=by('pass2').value;
+ if(p.length<12){message('新密碼至少 12 個字元。',true);return}
+ if(p!==p2){message('兩次密碼不一致。',true);return}
+ if(!token){message('重設連結已失效，請重新申請重設信。',true);return}
+ const btn=by('apply');btn.disabled=true;message('正在更新密碼…');
+ try{await api('user','PUT',{password:p},token);token=null;by('pass').value='';by('pass2').value='';by('change').classList.add('hidden');message('✅ 密碼已更新。請點「回 English Gym」，使用原 Email 與新密碼登入。')}
+ catch(e){message('更新失敗：'+e.message,true)}
+ finally{btn.disabled=false}
+});
+})();
+</script></body></html>
