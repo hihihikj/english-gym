@@ -1,0 +1,23 @@
+name: verify-smart9
+on:
+  push:
+    paths:
+      - '.github/workflows/verify-smart9.yml'
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '20'}
+      - run: |
+          node --check speak-smart.js
+          node --check app.js
+          node --check habits.js
+          node --check curriculum.js
+          node --check sw.js
+          node --check config.js
+          grep -q 'speak-smart.js' index.html
+          grep -q 'speak-smart.js' sw.js
+          grep -q 'ssOpen' habits.js
+          grep -q 'version: "2.0"' config.js
