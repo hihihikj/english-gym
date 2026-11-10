@@ -1,0 +1,35 @@
+name: Verify English Gym curriculum
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'curriculum.js'
+      - 'speak-smart.js'
+      - 'app.js'
+      - 'habits.js'
+      - 'config.js'
+      - 'sentences.js'
+      - 'tests/**'
+      - '.github/workflows/verify-curriculum.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: JavaScript syntax
+        run: |
+          node --check curriculum.js
+          node --check speak-smart.js
+          node --check sentences.js
+          node --check app.js
+          node --check habits.js
+          node --check sw.js
+          node --check config.js
+      - name: Interest-led curriculum and progress tests
+        run: node tests/curriculum-smoke.test.js
