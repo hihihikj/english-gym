@@ -1,5 +1,9 @@
 /* Speak Smart 9 — free, low-pressure clarity practice; no external paid API. */
 const SS_TOPICS=[
+ ['What makes Geneva an interesting place to live?','I think Geneva is interesting because people from many different countries live and work here. For example, I can meet people with very different experiences.','Point → Reason → Example'],
+ ['What makes a city worth visiting?','For me, a city is worth visiting when it has interesting history and beautiful streets. For example, I enjoy discovering places with distinctive architecture.','Point → Reason → Example'],
+ ['What can people learn from living abroad?','Living abroad helps us understand different habits and perspectives. For instance, I have learned to communicate with people from many backgrounds.','Point → Reason → Example'],
+ ['Why do people from different countries meet in Geneva?','Geneva is home to many international organisations. People come here to discuss global challenges, exchange information and cooperate across borders.','Point → Reason → Example'],
  ['How can small countries make their voices heard in international organisations?','Smaller countries can build coalitions and contribute specialised expertise. For example, cooperation on public health can help them influence discussions beyond their economic size.','Point → Reason → Example'],
  ['Should diplomats speak publicly or negotiate privately during a crisis?','I think both approaches can be useful. Public statements signal a position, while private negotiations may create room for compromise. The right balance depends on the situation.','Compare → Position → Reason'],
  ['How would you explain Taiwan’s international participation to a new friend?','Taiwan participates in many international networks through trade, technology and people-to-people exchanges. I would explain its contribution with a concrete example and invite questions.','Point → Evidence → Example'],
