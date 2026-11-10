@@ -35,4 +35,23 @@ window.ENGLISH_GYM_SENTENCES=[
 {id:'l6-04',d:6,topic:'education',t:'An educational intervention can appear effective in a small study while producing different results when implemented across a larger and more diverse population.'},
 {id:'l6-05',d:6,topic:'finance',t:'Long-term investment decisions should account for expected return, volatility, taxes, liquidity needs, and the investor’s ability to tolerate prolonged drawdowns.'},
 {id:'l6-06',d:6,topic:'work',t:'A persuasive professional recommendation should explain the evidence, the trade-offs, and the assumptions that would change the conclusion.'}
+,
+{id:'dip-01',d:1,topic:'diplomacy',t:"Could you clarify what your delegation means by that?"},
+{id:'dip-02',d:1,topic:'international',t:"We need to listen before we respond."},
+{id:'dip-03',d:1,topic:'mystery',t:"Something about this message does not make sense."},
+{id:'dip-04',d:2,topic:'diplomacy',t:"Our priority is to find a practical solution that both sides can accept."},
+{id:'dip-05',d:2,topic:'geneva',t:"I enjoy meeting people from different countries in Geneva."},
+{id:'dip-06',d:2,topic:'technology',t:"AI can help us organise information, but we still need to check it."},
+{id:'dip-07',d:3,topic:'diplomacy',t:"Before we reach a conclusion, we should separate confirmed facts from assumptions."},
+{id:'dip-08',d:3,topic:'international',t:"The proposal could help both delegations, although several details remain unclear."},
+{id:'dip-09',d:3,topic:'mystery',t:"At first, the evidence suggested one explanation, but a small detail changed the picture."},
+{id:'dip-10',d:4,topic:'diplomacy',t:"We support the general objective, but we would appreciate clarification on the proposed timetable."},
+{id:'dip-11',d:4,topic:'international',t:"Smaller countries can strengthen their influence by developing partnerships and specialised expertise."},
+{id:'dip-12',d:4,topic:'technology',t:"Technological restrictions may improve security while creating unintended effects on trade and innovation."},
+{id:'dip-13',d:5,topic:'diplomacy',t:"A constructive negotiation requires both sides to acknowledge competing interests and identify realistic areas of cooperation."},
+{id:'dip-14',d:5,topic:'international',t:"The policy may offer short-term benefits, but its long-term consequences depend on implementation and diplomatic coordination."},
+{id:'dip-15',d:5,topic:'mystery',t:"Although the initial hypothesis appeared convincing, subsequent evidence raised questions that investigators could not ignore."},
+{id:'dip-16',d:6,topic:'diplomacy',t:"While the agreement represents meaningful progress, its credibility will ultimately depend on transparent monitoring and consistent implementation."},
+{id:'dip-17',d:6,topic:'technology',t:"Governments should assess the trade-offs between supply-chain resilience, economic efficiency and international cooperation before imposing sweeping restrictions."},
+{id:'dip-18',d:6,topic:'international',t:"An effective diplomatic briefing distinguishes verified information, plausible interpretations and unresolved uncertainties before presenting recommendations."}
 ];
