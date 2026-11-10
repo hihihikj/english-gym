@@ -150,6 +150,7 @@ function c1Render(){
  '<div class="row"><span class="pill">'+C1_LABELS[skill]+'</span><span class="pill">20–30 分鐘</span><span class="pill">原創模擬情境・非即時新聞</span></div>'+
  '<h3 style="margin-top:10px">'+esc(unit?unit.title:skill==='writing'?'Briefing / opinion writing':'Clear speaking / diplomacy')+'</h3>'+
  c1LessonContent(skill,data,materialIndex,num)+
+ '<div class="tip" style="margin-top:10px"><b>今天可用的英文：</b> '+esc(data.phrases[tier])+'</div>'+
  '<div id="c1Feedback" style="margin-top:12px"></div>'+
  '<div class="row" style="margin-top:12px"><button class="primary" onclick="c1CompleteToday()">✅ 完成這一堂</button><button onclick="c1ChangeTopic()">換題材</button></div></div>')+
  '<details style="margin-top:14px"><summary><b>如何申請 B2 英檢？／官方閱讀資源</b></summary>'+
@@ -187,7 +188,7 @@ function c1ChangeTopic(){
  const keys=Object.keys(C1_TOPICS),s=c1State(),i=keys.indexOf(s.topic);
  c1TopicChanged(keys[(i+1)%keys.length]);}
 function c1PlayListening(){
- const s=c1State(),i=Math.floor((c1NextNum()-1)/4)%2,x=C1_TOPICS[s.topic].listening[i];
+ const s=c1State(),i=Math.floor((c1NextNum()-1)/4),x=C1_TOPICS[s.topic].listening[i];
  if(!('speechSynthesis' in window)){document.getElementById('c1Feedback').textContent='此瀏覽器不支援朗讀；請改用文字或其他裝置。';return;}
  window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(x.text);u.lang='en-GB';u.rate=.86;window.speechSynthesis.speak(u);
 }
