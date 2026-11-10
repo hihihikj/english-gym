@@ -7,6 +7,7 @@ const C1_SOURCES=[
   {name:'Cambridge｜B2 First',url:'https://www.cambridgeenglish.org/exams-and-tests/qualifications/first/'},
   {name:'考選部｜外交特考公告',url:'https://wwwc.moex.gov.tw/Main/Exam/wFrmPropertyDetail.aspx?c=115140&m=7907'}
 ];
+const C1_EXAMS={unsure:'尚未選定正式英檢',cambridge:'Cambridge B2 First',ielts:'IELTS（之後可銜接 C1）',gept:'GEPT 全民英檢',toeic:'TOEIC 四技能組合'};
 const C1_SKILLS=['reading','listening','speaking','writing'];
 const C1_LABELS={reading:'📖 Reading',listening:'🎧 Listening',speaking:'🗣️ Speaking',writing:'✍️ Writing'};
 const C1_TOPICS={
@@ -144,6 +145,7 @@ function c1Render(){
  el.innerHTML='<div class="row" style="justify-content:space-between;align-items:start"><div><span class="pill">B2 檢定 → C1｜興趣導向</span><h2>🎓 英文主線：B2 通關，C1 進階</h2><p class="small">每週挑 3 次，每次約 20–30 分鐘；不補課。先通過正式英檢 B2 四技能，再持續往 C1。</p></div><span class="pill">'+count+'/16</span></div>'+
  '<div class="c1Bar" style="margin:12px 0"><i style="width:'+(count/16*100)+'%"></i></div>'+
  '<div class="tip"><b>'+C1_LEVELS[tier].title+'</b>｜下一堂 '+num+'/16：'+C1_LABELS[skill]+'<p class="small">四技能輪替，不會只練口說。每 4 堂完成一輪。</p></div>'+
+ '<details style="margin-top:12px"><summary>🎯 正式 B2 英檢目標（可隨時調整）</summary><p class="small">必須取得考選部採認的四技能正式成績；下面是練習方向，不會自動報名或推定你已通過。</p><select id="c1Exam" onchange="c1ExamChanged(this.value)">'+Object.entries(C1_EXAMS).map(([k,v])=>'<option value="'+k+'" '+((s.exam||'unsure')===k?'selected':'')+'>'+esc(v)+'</option>').join('')+'</select><p class="small">正式採認資格及成績仍以報考年度考選部公告為準。</p></details>'+
  '<label class="small" for="c1Topic">挑你今天真正想讀的主題</label><select id="c1Topic" onchange="c1TopicChanged(this.value)">'+
  Object.entries(C1_TOPICS).map(([k,v])=>'<option value="'+k+'" '+(s.topic===k?'selected':'')+'>'+esc(v.name)+'</option>').join('')+'</select>'+
  (all?c1AdvancedHtml(s):'<div class="c1Today" style="margin-top:12px">'+
@@ -156,6 +158,7 @@ function c1Render(){
  '<details style="margin-top:14px"><summary><b>如何申請 B2 英檢？／官方閱讀資源</b></summary>'+
  '<p class="small">外交特考英文組與國際法組須有報名前 3 年內、含聽說讀寫的有效 B2 證明；需依報考年度公告確認採認測驗及四項門檻。這個程式不是官方測驗，也不會推定你已取得 B2。</p>'+
  '<div class="c1Links">'+resource+'</div><p class="small">官方新聞可自行選有趣的文章；不會把即時新聞混充成程式內的原創題材。</p></details>'+
+ '<details style="margin-top:10px"><summary>保留的舊版 Sussex 課程紀錄</summary><p class="small">舊版 Unit 1 進度：'+Object.values(st.curriculum?.completed||{}).filter(Boolean).length+' 堂。紀錄仍在帳號資料中；不再是新主線的必修。</p></details>'+
  '<p class="small">最低門檻：10 分鐘也值得。若今天真的不喜歡題材，直接換，不必硬讀。</p>';
 }
 /* Ongoing C1 elective labs after the 16-session B2-to-C1 bridge.
@@ -208,6 +211,7 @@ function c1LessonContent(skill,data,idx,num){
  '<p class="small" id="c1Words">0 words</p><button onclick="c1CopyWriting()">複製給 ChatGPT 批改</button>';
  return '';
 }
+function c1ExamChanged(exam){if(!C1_EXAMS[exam])return;c1State().exam=exam;save();}
 function c1TopicChanged(topic){
  if(!C1_TOPICS[topic])return;c1State().topic=topic;c1Answer=null;c1Spoken=false;c1Draft='';save();c1Render();
 }
