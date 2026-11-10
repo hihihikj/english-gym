@@ -1,23 +1,29 @@
 /* Speak Smart 9 — free, low-pressure clarity practice; no external paid API. */
 const SS_TOPICS=[
-['Do you prefer studying at home or at a library?','I prefer studying at a library because I can focus better. At home, I often end up playing with my cat or doing household chores.','Point → Reason → Example'],
-['Why is learning a foreign language important?','I think learning another language is valuable because it helps us connect with people. For example, speaking French makes daily life in Geneva easier.','Point → Reason → Example'],
-['Should people always try to be productive?','I understand why productivity matters, but rest is important too. For example, a short break helps me come back with more energy.','Acknowledge → Position → Reason'],
-['What is one habit you would like to improve?','I want to spend less time scrolling on my phone because it distracts me from my priorities. For example, I could read for ten minutes instead.','Point → Reason → Example'],
-['How would you ask someone to speak more slowly?','Could you speak a little more slowly, please? I want to make sure I understand the details.','Request → Reason'],
-['Tell me about a time you solved a small problem.','I was distracted at home, so I decided to work at a library. As a result, I was able to focus on my reading.','Situation → Change → Result'],
-['Do you think children should have more free time?','I think children need unstructured time because it encourages creativity. For example, they can invent their own games instead of following instructions.','Point → Reason → Example'],
-['What makes a conversation enjoyable?','For me, a good conversation involves curiosity and listening. For instance, asking a follow-up question can make the other person feel heard.','Point → Reason → Example']
-];
+ ['How can small countries make their voices heard in international organisations?','Smaller countries can build coalitions and contribute specialised expertise. For example, cooperation on public health can help them influence discussions beyond their economic size.','Point → Reason → Example'],
+ ['Should diplomats speak publicly or negotiate privately during a crisis?','I think both approaches can be useful. Public statements signal a position, while private negotiations may create room for compromise. The right balance depends on the situation.','Compare → Position → Reason'],
+ ['How would you explain Taiwan’s international participation to a new friend?','Taiwan participates in many international networks through trade, technology and people-to-people exchanges. I would explain its contribution with a concrete example and invite questions.','Point → Evidence → Example'],
+ ['What does a good diplomat do when two sides disagree?','A good diplomat listens carefully, identifies shared interests and clarifies misunderstandings. For instance, agreeing on definitions can make further negotiation possible.','Point → Reason → Example'],
+ ['Should countries restrict exports of advanced technology?','Export controls can protect security interests, but they may also disrupt supply chains. Governments should assess both consequences before adopting broad restrictions.','Position → Trade-off → Recommendation'],
+ ['How should international organisations respond to a humanitarian crisis?','I would prioritise reliable information and cooperation with local partners. Clear coordination can prevent duplication and help assistance reach the people who need it.','Priority → Reason → Example'],
+ ['Do you think AI will change the work of diplomats?','AI could help diplomats summarise documents and compare information. However, human judgement will remain important when trust and political context matter.','Benefit → Limitation → Conclusion'],
+ ['What makes a public statement persuasive?','A persuasive statement should be concise, evidence-based and respectful. It should acknowledge concerns rather than simply repeat a strong position.','Claim → Evidence → Implication'],
+ ['How would you politely challenge a claim in a meeting?','I understand your point, but could we look more closely at the evidence? I think we should separate confirmed facts from assumptions before deciding.','Acknowledge → Question → Suggestion'],
+ ['What can international visitors learn from living in Geneva?','Geneva brings together people with different professional and cultural backgrounds. Meeting them can make international issues feel more concrete and personal.','Point → Reason → Example'],
+ ['Tell a mystery story in which one small clue changes everything.','At first, I thought someone had stolen the missing file. Then I noticed an outdated room number. The file had simply been moved to another archive.','Situation → Clue → Revelation'],
+ ['Why is it important to change your mind when new evidence appears?','Changing our minds is not a sign of weakness. It shows that we are willing to test our assumptions and make better decisions when new information becomes available.','Position → Reason → Illustration'],
+ ['How could AI help public agencies without replacing human judgement?','AI can save time on routine summaries. However, officials should review sensitive information because an inaccurate summary may influence serious decisions.','Benefit → Risk → Safeguard'],
+ ['Should smaller countries prioritise partnerships or independence?','I would favour a balanced strategy. Partnerships can increase influence, but maintaining some flexibility helps countries protect their own priorities.','Position → Trade-off → Conclusion']
+]
 let ssStep=0,ssIndex=0,ssStart=0,ssFirst='',ssSecond='';
 function ssData(){if(!st.speakSmart9)st.speakSmart9={completed:0,sessions:[],next:0};return st.speakSmart9}
 function ssHome(){
  const el=document.getElementById('ss9Home');if(!el)return;
- const data=ssData();el.innerHTML='<div class="row" style="justify-content:space-between"><div><span class="pill">免費・9 分鐘・低壓</span><h2>🗣️ Speak Smart 9</h2><p class="small">練習 Point → Reason → Example、自然表達與一次 retry。選它就不用再加做 Gym。</p></div><span class="pill">已完成 '+data.completed+' 次</span></div><button class="primary" onclick="ssOpen()">開始 9 分鐘</button><p class="small">每週 2 次即可；沒有連勝、沒有補課債。錄音與逐字稿不會上傳儲存。</p>';
+ const data=ssData();el.innerHTML='<div class="row" style="justify-content:space-between"><div><span class="pill">免費・9 分鐘・低壓</span><h2>🗣️ Speak Smart 9｜外交・推理・科技</h2><p class="small">選感興趣的題目，練清晰表達＋一次 retry。選這個就不用再加做 Gym。</p></div><span class="pill">已完成 '+data.completed+' 次</span></div><label class="small" for="ssTopicChoice">今天想講什麼？</label><select id="ssTopicChoice">'+SS_TOPICS.map((q,i)=>'<option value="'+i+'" '+(i===data.next?'selected':'')+'>'+esc(q[0])+'</option>').join('')+'</select><button class="primary" onclick="ssOpen()">開始 9 分鐘</button><p class="small">每週 1–2 次即可；沒有連勝或補課債。口說全文不會存入雲端。</p>';
 }
 function ssOpen(){
  if(!currentUser)return;
- ssIndex=ssData().next%SS_TOPICS.length;ssStep=0;ssStart=Date.now();ssFirst='';ssSecond='';
+ ssIndex=Number(document.getElementById("ssTopicChoice")?.value??ssData().next)%SS_TOPICS.length;ssStep=0;ssStart=Date.now();ssFirst='';ssSecond='';
  document.getElementById('ss9Box').classList.remove('hidden');ssRender();
  document.getElementById('ss9Box').scrollIntoView({behavior:'smooth',block:'start'});
 }
