@@ -83,6 +83,44 @@ const C1_TOPICS={
   phrases:['One potential benefit is…','However, an important limitation is…','This raises questions about…','A balanced approach would…']
  }
 };
+/* Additional original materials so each 4-skill round advances rather than repeats. */
+const C1_EXTRA={
+ diplomatic:{
+  reading:[
+   {title:'A Humanitarian Corridor',text:'In a fictional negotiation, humanitarian agencies ask two parties to allow a safe route for medical supplies. Both sides say they support helping civilians, but they disagree about who should monitor the route. One side wants independent observers, while the other argues that foreign monitors would threaten sovereignty. A mediator proposes a limited pilot with agreed reporting rules and a joint review after the first deliveries. This does not settle the wider conflict, but it narrows the immediate dispute. The mediator also insists that both parties distinguish their public political positions from the practical requirements of delivering medicine. During the pilot, observers will report delays without assigning blame before the evidence is reviewed. The arrangement shows how an apparently impossible negotiation can sometimes move forward through small, verifiable commitments. Its success still depends on implementation, not merely on signing a document.',q:'Why does the mediator recommend a pilot?',choices:['To avoid any monitoring','To test a limited practical arrangement','To settle the entire conflict immediately'],answer:1,why:'The limited pilot allows monitoring and review without resolving the entire political dispute.'},
+   {title:'An Ambassador Weighs Two Risks',text:'A fictional ambassador must brief her government about a proposed economic agreement. The deal could open a new market for local exporters, but it may also increase dependence on a trading partner that has recently changed its regulations without warning. The ambassador asks her team to separate immediate commercial benefits from strategic risks. Some advisers favour signing quickly to secure access before competitors arrive. Others argue that stronger dispute-resolution provisions should be negotiated first. Rather than describe the issue as a simple choice between growth and security, the ambassador recommends a phased agreement with periodic reviews and transparent indicators. She also notes an important uncertainty: market forecasts depend on assumptions that could change within a year. Her briefing aims to help decision-makers understand not only what might happen, but what evidence would cause her recommendation to change.',q:'Which feature makes the recommendation more cautious?',choices:['A phased agreement with periodic reviews','A ban on trade forecasts','Refusing to speak with exporters'],answer:0,why:'The ambassador recommends stages, reviews and transparent evidence rather than an unconditional commitment.'}
+  ],
+  listening:[
+   {title:'A Humanitarian Meeting',text:'Before we finalise this arrangement, I would like to confirm three details. Who will collect information about delays? How will we report incidents that have not yet been verified? And when will both parties review the pilot? Our aim is not to resolve every disagreement today. It is to establish a practical process that can be monitored and adjusted if problems arise.',q:'What is the speaker’s immediate aim?',choices:['Resolve every political disagreement','Establish a verifiable process','Stop all deliveries'],answer:1,why:'The speaker proposes a practical process to monitor and adjust.'},
+   {title:'An Ambassador’s Recommendation',text:'There is a credible economic opportunity, but I would not recommend an unconditional agreement at this stage. The projected gains rely on assumptions about future trade rules. I suggest a phased approach, clear review dates and a mechanism for addressing unexpected restrictions. We should explain that this recommendation is cautious, not hostile. Our goal is to protect cooperation by managing risk.',q:'Why does the ambassador prefer a phased approach?',choices:['To manage uncertainty in trade rules','To prevent any future negotiations','Because the agreement has no benefits'],answer:0,why:'The recommendation recognises opportunities but limits exposure to unpredictable regulation.'}
+  ]
+ },
+ mystery:{
+  reading:[
+   {title:'The Case of the Altered Map',text:'A historian finds two maps of the same mountain pass in a museum archive. Both are labelled with the same year, yet one shows a bridge that the other omits. A dramatic explanation would be that somebody altered the historical record deliberately. Before making that claim, the historian checks the printing marks and discovers that the documents come from different editions. The later edition was updated after a flood destroyed an older crossing and forced the construction of a new bridge. The archive had attached the same approximate date to both maps during a cataloguing project. The historian writes a short note explaining the uncertainty and asks the museum to revise the labels. What appears to be a conspiracy can sometimes result from incomplete documentation. Nevertheless, the difference was worth investigating because it revealed a real change in the landscape and the way information had been recorded.',q:'Why were the maps different?',choices:['They belonged to different updated editions','One was certainly forged','The bridge was imaginary'],answer:0,why:'Different editions and an approximate catalogue date caused the discrepancy.'},
+   {title:'An Unreliable Witness',text:'During a fictional inquiry into a missing painting, three witnesses report hearing a door close at midnight. A researcher initially treats their accounts as independent evidence, but discovers that all three discussed the event together before being interviewed. Their descriptions are remarkably similar, including an unusual expression used by the first witness. The investigator explains that agreement between witnesses is not always proof of accuracy if their memories may have influenced one another. She looks for additional records and finds a repair log showing that a security door had been malfunctioning for several days. The inquiry is not over, but the team now has a more reliable line of investigation. The experience illustrates a wider reasoning skill: before counting sources as separate confirmation, ask whether they depend on the same original information.',q:'What reduces the independence of the witnesses?',choices:['They were interviewed separately','They discussed the event before their interviews','They were in different cities'],answer:1,why:'Their accounts may have influenced each other before the inquiry.'}
+  ],
+  listening:[
+   {title:'The Map Archive',text:'We should not assume that the difference between the maps proves deliberate tampering. The printing marks suggest two editions, and the archive uses approximate dates. I recommend checking local records about the bridge and adding a note to the catalogue until we understand the sequence more clearly. It is better to explain uncertainty than to make a dramatic but unsupported claim.',q:'What does the researcher recommend?',choices:['Publish an accusation','Investigate editions and local records','Ignore the difference'],answer:1,why:'The researcher wants the team to verify the editions and document uncertainty.'},
+   {title:'A Witness Statement',text:'The three witnesses gave similar descriptions, but we should be cautious. They spoke to one another before the interviews, so their memories may no longer be independent. The security logs might offer a separate source of evidence. Please check whether the door had any known faults before we decide what happened that night.',q:'What additional source does the investigator suggest?',choices:['Security logs','Online rumours','Another discussion between the witnesses'],answer:0,why:'The investigator asks the team to examine security logs as independent evidence.'}
+  ]
+ },
+ technology:{
+  reading:[
+   {title:'A Regional Agreement on AI Safety',text:'Several fictional governments are considering a regional agreement on the use of artificial intelligence in public services. All support innovation, but they differ in how much oversight companies should face. One country wants strict licensing rules; another argues that extensive regulation could limit small businesses. Instead of drafting a universal rule immediately, the negotiators agree on shared principles: transparency, clear responsibility for errors, and opportunities for independent evaluation. Each government would be free to develop specific regulations, but they would compare results after one year. Critics say such principles may be too vague to protect the public. Supporters respond that shared definitions are a realistic starting point when countries have different legal systems. The debate is not simply about choosing between safety and innovation. It is about designing institutions that can adapt as technology changes.',q:'What do negotiators agree on first?',choices:['Shared principles and later evaluation','A single strict law for all countries','A total ban on public-service AI'],answer:0,why:'They adopt common principles while leaving detailed laws to individual governments.'},
+   {title:'Technology Restrictions and Diplomatic Costs',text:'An imaginary government is preparing restrictions on advanced components that could have military applications. Security officials argue that the measure is necessary to reduce strategic risks. Industry representatives warn that the same components are also used in civilian research, and broad restrictions could delay important projects. A policy analyst recommends narrow definitions, clear exemptions and regular reviews. She also suggests consulting affected trade partners before publishing the final rules, because surprise announcements might damage cooperation. Neither side can predict the exact economic impact, so the analyst highlights the evidence available and the areas of uncertainty. The proposal does not remove the tension between openness and security, but it provides a way to make the trade-off more explicit. Good policy analysis should explain which assumptions matter and how decisions could be revised.',q:'What is the main purpose of narrow exemptions and reviews?',choices:['To make restrictions more proportionate','To remove security considerations','To guarantee zero economic impact'],answer:0,why:'Narrow rules and reviews seek a balance between risk reduction and civilian uses.'}
+  ],
+  listening:[
+   {title:'AI Safety Negotiation',text:'The delegations have not reached agreement on one detailed regulation, but they support three common principles. First, public agencies should explain how they use automated tools. Second, someone must be responsible when those tools make mistakes. Third, independent evaluations should be possible. We propose reviewing implementation next year instead of claiming that the problem has already been solved.',q:'Which principle is mentioned?',choices:['No responsibility for mistakes','Independent evaluation','Permanent secrecy'],answer:1,why:'The speaker explicitly includes independent evaluations.'},
+   {title:'Trade Policy Advice',text:'Our assessment recognises the security concerns, but a broad ban could affect civilian research. We recommend defining the restricted components precisely, identifying appropriate exemptions and consulting important partners before the announcement. We also need a review date, because the technology and its uses are changing quickly. The strongest policy is one that can be adjusted when better evidence appears.',q:'What does the analyst advise?',choices:['Broad restrictions with no review','Precise rules and partner consultation','Avoiding any security analysis'],answer:1,why:'The analyst recommends precise definitions, exceptions, consultation and review.'}
+  ]
+ }
+};
+for(const k of Object.keys(C1_EXTRA)){
+ C1_TOPICS[k].reading.push(...C1_EXTRA[k].reading);
+ C1_TOPICS[k].listening.push(...C1_EXTRA[k].listening);
+}
+
 const C1_LEVELS=[
  {title:'B2 起步｜把意思講完整',word:'80–120',min:80,max:120,aim:'結論、原因、具體例子'},
  {title:'B2 進階｜比較與解釋',word:'110–150',min:110,max:150,aim:'比較選項、說明取捨'},
@@ -100,7 +138,7 @@ function c1NextNum(){for(let i=1;i<=16;i++)if(!c1State().completed[i])return i;r
 function c1Render(){
  const el=document.getElementById('c1SchoolHome');if(!el||!currentUser)return;
  const s=c1State(),count=c1Count(),all=count===16,num=c1NextNum(),tier=Math.floor((num-1)/4),skill=C1_SKILLS[(num-1)%4],data=C1_TOPICS[s.topic]||C1_TOPICS.diplomatic;
- const materialIndex=Math.floor((num-1)/4)%2;
+ const materialIndex=Math.floor((num-1)/4);
  const block=data[skill],unit=skill==='reading'||skill==='listening'?block[materialIndex]:null;
  const resource=C1_SOURCES.map(x=>'<a href="'+x.url+'" target="_blank" rel="noopener noreferrer">'+esc(x.name)+'</a>').join(' · ');
  el.innerHTML='<div class="row" style="justify-content:space-between;align-items:start"><div><span class="pill">B2 檢定 → C1｜興趣導向</span><h2>🎓 英文主線：B2 通關，C1 進階</h2><p class="small">每週挑 3 次，每次約 20–30 分鐘；不補課。先通過正式英檢 B2 四技能，再持續往 C1。</p></div><span class="pill">'+count+'/16</span></div>'+
@@ -155,7 +193,7 @@ function c1PlayListening(){
 }
 function c1StopAudio(){if('speechSynthesis' in window)window.speechSynthesis.cancel()}
 function c1Check(){
- const num=c1NextNum(),skill=C1_SKILLS[(num-1)%4],idx=Math.floor((num-1)/4)%2;
+ const num=c1NextNum(),skill=C1_SKILLS[(num-1)%4],idx=Math.floor((num-1)/4);
  const x=C1_TOPICS[c1State().topic][skill][idx],f=document.getElementById('c1Feedback');
  if(c1Answer===null){f.textContent='先選一個答案，再按檢查。';return;}
  const good=c1Answer===x.answer;
@@ -173,7 +211,7 @@ async function c1CompleteToday(){
  const num=c1NextNum(),skill=C1_SKILLS[(num-1)%4],s=c1State();
  if(s.completed[num])return;
  if(skill==='reading'||skill==='listening'){
-  const x=C1_TOPICS[s.topic][skill][Math.floor((num-1)/4)%2];
+  const x=C1_TOPICS[s.topic][skill][Math.floor((num-1)/4)];
   if(c1Answer!==x.answer){document.getElementById('c1Feedback').textContent='先完成一題理解檢查；答案不對也可以重新聽或閱讀。';return;}
  }
  if(skill==='speaking'&&!c1Spoken){document.getElementById('c1Feedback').textContent='先練習口說一次，再勾選確認。';return;}
