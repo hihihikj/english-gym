@@ -171,10 +171,21 @@ function c1AdvancedHtml(s){
   speaking:'選一則你剛讀過的國關或科技故事，做 2 分鐘簡報：立場 → 背景 → 兩個理由 → 反方疑慮 → 建議。再用 30 秒回答假想追問。',
   writing:'就最近讀過的國關、AI 或人道議題撰寫 180–250 字英文 policy brief。先寫結論與建議，再寫證據、可能反對理由和限制；最後自己修正兩處。'
  };
- const link=topic==='diplomatic'?'https://www.ungeneva.org/en/news-media/news':topic==='technology'?'https://www.unhcr.org/news/stories':'https://www.ungeneva.org/en/news-media';
+ if(topic==='mystery'){
+ work.reading='從 English Gym 的 Reading 10 挑一篇你喜歡的懸疑故事，分析作者如何引導讀者推論；指出兩項證據、一項假設及一種不同解釋。';
+ work.listening='從之前的英文練習挑一段故事或訪談，以瀏覽器語音重聽；第一次找主線，第二次辨別語氣與未說出口的暗示。';
+ work.speaking='用 2 分鐘講一個懸疑事件，包含背景、關鍵線索、可能的反向證據與合理結論。';
+ work.writing='寫 180–250 字分析一件故事中的推理失誤，區分事實、假設及替代解釋。';
+}
+if(topic==='technology'){
+ work.reading='選一篇官方機構談 AI、科技政策或資料治理的英文文章，分析核心論點、證據、可能受影響者及其政策取捨。';
+ work.speaking='就 AI 法規、晶片供應鏈或科技治理做 2 分鐘政策簡報，包括利益、風險、反方觀點與建議。';
+ work.writing='就近期 AI 或科技政策議題寫 180–250 字英文分析，提出建議及執行上的限制。';
+}
+const link=topic==='diplomatic'?'https://www.ungeneva.org/en/news-media/news':topic==='technology'?'https://www.unhcr.org/news/stories':'https://www.ungeneva.org/en/news-media';
  return '<div class="c1Today" style="margin-top:12px"><span class="pill">C1 延伸練習｜第 '+(n+1)+' 次</span><h3>'+C1_LABELS[skill]+'・自主深度任務</h3><p>'+work[skill]+'</p>'+
  '<p class="small">題材由你決定；不強迫完成不感興趣的新聞。閱讀／聽力材料來自外部官方網站，程式不會假裝自動更新即時內容。</p>'+
- '<div class="c1Links"><a href="'+link+'" target="_blank" rel="noopener noreferrer">開啟官方素材庫</a></div>'+
+ '<div class="c1Links">'+(topic==='mystery'?'<button onclick="openReading10()">開啟 Reading 10 懸疑故事</button>':'<a href="'+link+'" target="_blank" rel="noopener noreferrer">開啟官方素材庫</a>')+'</div>'+
  '<label class="c1Option"><input id="c1AdvancedDone" type="checkbox"> 我已完成今天這項技能的練習</label>'+
  '<button class="primary" onclick="c1AdvancedFinish()">記錄這次 C1 深度練習</button>'+
  '<p class="small">已記錄 '+n+' 次 C1 延伸練習。這只是練習紀錄；能力級別仍須由正式測驗和專業評估確認。</p></div>';
