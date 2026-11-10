@@ -1,73 +1,193 @@
-/* English Gym v1.7 — Low-pressure C1 track.
-   Goal: sustainable progress, not daily pressure.
-   Main textbook: University of Sussex Develop Your English.
-   4 sessions/week, ~30 min/session, no make-up debt.
-   No paid APIs. Progress lives inside the existing private state object. */
-const C1_SUSSEX='https://openpress.sussex.ac.uk/developyourenglish/';
-const C1_BBC='https://bbclearningenglish.org/programme/upper-intermediate-course';
-const C1_PLAN=[
- {day:1,pages:'PDF 29–30',title:'SDG12 + Key Vocabulary + Introduction',main:'00–20｜讀 PDF 29–30，只抓大意。最多圈 3 個想用的 phrase。',output:'20–30｜關掉課本，用英文回答：What is a circular economy? 30–60 秒即可。'},
- {day:2,pages:'PDF 31–32',title:'Reading 前段',main:'00–20｜讀 PDF 31–32：Before you read + collocations + skim reading。',output:'20–30｜寫 3 個 bullet points：problem / who is affected / one useful phrase。'},
- {day:3,pages:'PDF 33–35',title:'Reading 後段 + Summary',main:'00–20｜讀 PDF 33–35，完成 Reading 後半。',output:'20–30｜不用看原文說 45 秒：What are the innovators doing with plastic waste?'},
- {day:4,pages:'PDF 35–36',title:'Function: Causality',main:'00–20｜只學 3 個：cause / result in / give rise to。',output:'20–30｜自己造 3 句並說出來。'},
- {day:5,pages:'PDF 36–37',title:'Data Visualisation',main:'00–20｜看 Plastic waste to chemicals，先弄懂流程。',output:'20–30｜只口頭描述流程，不寫 IELTS Task 1。'},
- {day:6,pages:'PDF 37–38',title:'Pronunciation + Listening Prep',main:'00–15｜挑 5 個四音節字：聽→說→再聽。',output:'15–30｜先看 Listening 題目，預測內容；今天不必完整聽完。'},
- {day:7,pages:'PDF 38–40',title:'Listening',main:'00–10｜先看題目。10–20｜完整聽一次，只抓 main idea。',output:'20–30｜再聽一次，只找 3 個關鍵資訊。'},
- {day:8,pages:'PDF 40–41',title:'Vocabulary + Check-in',main:'00–20｜做 Vocabulary / crossword，最多留下 5 個詞。',output:'20–30｜檢討：這 8 次完成幾次？30 分鐘是否剛好？哪種任務最耗能？'}
+/* English Gym v2.1 — B2 passport first, C1 diplomacy bridge.
+   Fictional learning scenarios, not current news reports. No paid services.
+   New progress in st.curriculum.pathwayV3; old progress preserved. */
+const C1_SOURCES=[
+  {name:'UN Geneva｜國際新聞',url:'https://www.ungeneva.org/en/news-media/news'},
+  {name:'UNHCR｜人道故事',url:'https://www.unhcr.org/news/stories'},
+  {name:'Cambridge｜B2 First',url:'https://www.cambridgeenglish.org/exams-and-tests/qualifications/first/'},
+  {name:'考選部｜外交特考公告',url:'https://wwwc.moex.gov.tw/Main/Exam/wFrmPropertyDetail.aspx?c=115140&m=7907'}
 ];
-
+const C1_SKILLS=['reading','listening','speaking','writing'];
+const C1_LABELS={reading:'📖 Reading',listening:'🎧 Listening',speaking:'🗣️ Speaking',writing:'✍️ Writing'};
+const C1_TOPICS={
+ diplomatic:{
+  name:'外交・國關・日內瓦',
+  reading:[
+    {title:'A Difficult Briefing in Geneva',text:'At a fictional international meeting in Geneva, three delegations tried to agree on a statement about humanitarian access. The first delegation wanted strong language and a clear deadline. The second argued that setting a deadline without a realistic delivery plan could weaken trust. The third suggested a compromise: an immediate assessment followed by a review after two weeks. During the discussion, the chair noticed that participants were using the word “access” differently. Some meant permission to enter an area, while others meant the practical ability to move supplies safely. Before drafting the statement, the chair asked each group to define the term. This small clarification changed the discussion. Although the delegations still disagreed about the deadline, they eventually adopted wording that described both permission and logistics. The case shows that successful negotiation sometimes begins not with a major concession but with a precise definition.',q:'What helped the delegations make progress?',choices:['They cancelled the meeting','They clarified what “access” meant','They agreed to remove every deadline'],answer:1,why:'The chair clarified the different meanings of “access” before the statement was drafted.'},
+    {title:'Public Statement or Quiet Negotiation?',text:'An imaginary foreign ministry faces a dilemma. A neighbouring country has introduced new inspections that slow down cross-border trade. Some advisers recommend a strongly worded public statement to reassure local businesses. Others believe that a private meeting would be more effective because public criticism could make compromise politically difficult. A junior diplomat proposes a two-part strategy. First, officials should gather evidence on how much time goods are losing at the border. Second, they should open technical talks while preparing a measured public message explaining the practical consequences. The minister agrees to review the evidence before deciding whether to escalate. The strategy does not guarantee a quick solution, but it creates a way to distinguish the economic problem from the political disagreement. It also demonstrates a useful principle: communication can be firm without being unnecessarily confrontational.',q:'What is the diplomat’s main recommendation?',choices:['Escalate immediately','Collect evidence and hold technical talks','Avoid communication altogether'],answer:1,why:'The two-part strategy combines evidence gathering, technical discussion and careful public messaging.'}
+  ],
+  listening:[
+    {title:'A Delegate Requests Clarification',text:'Thank you, Chair. Our delegation supports the overall objective, but we would appreciate clarification on the proposed timetable. Is the two-week deadline intended for the initial assessment or for the delivery of all assistance? These are very different commitments. We suggest that the draft distinguish between them, so that each delegation understands what it is agreeing to. We would also welcome a brief update at the next meeting.',q:'What does the delegate want?',choices:['A clearer distinction between two deadlines','The cancellation of assistance','A new meeting in six months'],answer:0,why:'The delegate asks whether the timetable concerns assessment or complete delivery.'},
+    {title:'A Short Diplomatic Briefing',text:'Good morning. I have three points for today’s briefing. First, the delegations remain divided on the scope of the proposed agreement. Second, they have made progress on information sharing, which could reduce misunderstandings. Third, the chair has asked each delegation to submit one practical proposal by Friday. My recommendation is to keep our public message constructive while making our concerns clear in the working group.',q:'Which area has improved?',choices:['A final treaty has been signed','Information sharing between delegations','All concerns have disappeared'],answer:1,why:'The speaker states that progress has been made on information sharing.'}
+  ],
+  speaking:[
+    'Should diplomats make strong public statements or negotiate quietly when tensions rise?',
+    'How would you explain Taiwan’s international participation to someone who knows little about it?',
+    'How can two governments cooperate when they disagree about major political questions?',
+    'What would you say in a meeting if a proposal sounded promising but lacked clear evidence?'
+  ],
+  writing:[
+    'Write a short diplomatic email asking another delegation to clarify an unclear deadline. Be polite, precise and constructive.',
+    'Write a brief recommendation comparing a public statement with a private negotiation. Include one risk and one advantage for each.',
+    'Write a short briefing explaining why access to reliable information matters in international negotiations.',
+    'Write a balanced argument: Should smaller countries prioritise alliances or strategic flexibility?'
+  ],
+  phrases:['We would appreciate clarification on…','Our main concern is…','A possible compromise would be…','The evidence suggests that…']
+ },
+ mystery:{
+  name:'懸疑・推理・世界探索',
+  reading:[
+    {title:'The Missing File at the Archive',text:'A researcher arrived at a city archive to examine a document about an old railway project. The catalogue indicated that the file had been stored in Room Seven for decades. Yet the archivist could not find it. A computer record showed that it had been requested the previous afternoon. The person listed as the borrower was a colleague who had been abroad for two weeks. Instead of accusing anyone, the researcher compared the paper request form with the digital log. The form included the correct file number but an outdated room code. A member of staff then remembered moving several boxes during an emergency repair. After an hour of searching, they found the file in a temporary storage area. What initially looked like theft turned out to be a documentation error. The lesson was not that suspicion is always wrong, but that evidence should be checked before conclusions are announced.',q:'What ultimately explained the missing file?',choices:['A deliberate theft','A filing and room-code error','The document never existed'],answer:1,why:'The file had been moved and the outdated room code caused confusion.'},
+    {title:'A Message from Platform Four',text:'An engineer working on a fictional night train noticed a repeated warning on the control panel. The warning appeared only when the train entered an old tunnel, yet inspections found no mechanical defect. A passenger claimed to have seen the lights flicker at exactly the same point on three journeys. Another suggested a supernatural explanation, but the engineer remained sceptical. She compared train logs with maintenance records and discovered that the warning started shortly after new communication equipment was installed beside the tunnel. A controlled test showed that radio interference, rather than mechanical failure, triggered the alert. The team repaired the shielding and monitored the train for a week. The warning disappeared. The mystery had an ordinary explanation, but solving it required patience, curiosity, and a willingness to revise an initial hypothesis.',q:'Which evidence led to the solution?',choices:['A supernatural explanation','Communication equipment installed near the tunnel','A passenger’s travel plans'],answer:1,why:'The warning began after new communications equipment was installed.'}
+  ],
+  listening:[
+    {title:'An Investigator Checks a Timeline',text:'I want to clarify the sequence of events before we draw any conclusions. The building was locked at six thirty. The alarm sounded at seven fifteen, but the security camera stopped recording five minutes earlier. We know a technician visited the building that morning. What we do not know is whether the camera failure was connected to the alarm. Please separate confirmed facts from assumptions in your report.',q:'What does the investigator emphasise?',choices:['Separating facts from assumptions','Accusing the technician immediately','Ignoring the camera failure'],answer:0,why:'The speaker explicitly asks the team to distinguish confirmed facts and assumptions.'},
+    {title:'A Scientist Explains an Unexpected Signal',text:'We first thought the signal was coming from the sensor itself, but the data did not support that theory. It appeared at regular intervals and only during heavy rain. We then tested the insulation and discovered a small leak that was affecting a nearby cable. The important point is that our initial explanation was plausible, but it was not correct. We changed our view when new evidence became available.',q:'Why did the team change its explanation?',choices:['They were ordered to','New evidence revealed a cable problem','The signal disappeared permanently'],answer:1,why:'Insulation tests identified the leak affecting the cable.'}
+  ],
+  speaking:[
+    'Tell a short mystery story in which a small detail changes your conclusion.',
+    'How would you explain the difference between a clue and reliable evidence?',
+    'Should we trust our first impression when solving a problem?',
+    'Describe an unexpected discovery and how it changed your mind.'
+  ],
+  writing:[
+    'Write a concise incident report that separates facts, assumptions and unresolved questions.',
+    'Write a story about a missing object and an unexpected but logical explanation.',
+    'Explain why investigators should test alternative explanations.',
+    'Write a short argument about why uncertainty can be useful in research.'
+  ],
+  phrases:['At first, I assumed that…','The evidence did not support…','A more plausible explanation is…','This changed my initial conclusion.']
+ },
+ technology:{
+  name:'AI・科技・國際社會',
+  reading:[
+    {title:'An AI Tool at a Public Agency',text:'A fictional public agency is considering an artificial intelligence tool to help staff summarise long documents. Supporters expect the tool to save time, especially when reports arrive in several languages. Critics worry that summaries might omit exceptions or express uncertain findings as facts. The agency therefore tests the system with a set of documents that contain ambiguous terms and conflicting figures. It asks staff to record mistakes and review any conclusion before publication. After the pilot, managers find that the tool performs well on routine summaries but struggles with legal qualifications. They decide to use it for first drafts rather than final decisions. The result illustrates an important trade-off: automation can improve efficiency, but professional judgement remains necessary when accuracy and accountability matter.',q:'How does the agency decide to use AI?',choices:['For unreviewed final decisions','For first drafts with human review','To replace every staff member'],answer:1,why:'Managers decide to use AI for first drafts rather than final decisions.'},
+    {title:'Who Controls Critical Technology?',text:'Imagine two countries that rely on imported chips for communication networks. One government argues that local production is essential for national security. The other prefers diversified suppliers because building a complete domestic industry would be expensive and slow. A group of economists suggests that the choices are not mutually exclusive. Governments could strengthen selected domestic capabilities while maintaining several reliable trading partners. The group also warns that sudden restrictions may raise costs for consumers and create political friction. Decision-makers need to compare resilience, price, innovation and diplomatic consequences instead of focusing on a single objective. There is no perfect answer, but a transparent assessment of trade-offs can improve public debate.',q:'What is the economists’ proposed approach?',choices:['Depend on one supplier','Combine selective domestic capacity with diversified partners','Ban all international trade'],answer:1,why:'They suggest selective domestic capability plus diversified international suppliers.'}
+  ],
+  listening:[
+    {title:'An AI Policy Update',text:'The pilot project produced encouraging results, but we should be careful not to overstate them. The tool reduced the time required for routine summaries. However, human reviewers still found mistakes in complex legal documents. Our next step is to expand testing and publish clear guidelines about when staff must verify the output. Speed matters, but accuracy and accountability matter just as much.',q:'What problem remains?',choices:['Errors in complex legal documents','A shortage of office chairs','An inability to process routine summaries'],answer:0,why:'Human reviewers found mistakes when legal documents were complex.'},
+    {title:'A Supply Chain Briefing',text:'We recommend avoiding excessive dependence on a single supplier. Diversification may increase short-term costs, but it could reduce the impact of future disruptions. The policy team also suggests regular communication with trade partners, since unexpected restrictions can create uncertainty for both companies and governments. Our goal is to improve resilience without unnecessarily damaging cooperation.',q:'Why does the team recommend diversification?',choices:['To reduce disruption risks','To end all trade','To lower every short-term cost'],answer:0,why:'Diversification aims to reduce exposure to future disruptions.'}
+  ],
+  speaking:[
+    'Should governments regulate artificial intelligence more strictly?',
+    'How could AI help international organisations without replacing human judgement?',
+    'What are the risks of relying on one country for important technology?',
+    'How would you explain a difficult AI policy choice to the public?'
+  ],
+  writing:[
+    'Write a short recommendation about responsible AI use in a public agency.',
+    'Compare the advantages and disadvantages of restricting technology exports.',
+    'Explain how technology can support international humanitarian work while creating new risks.',
+    'Write a balanced argument about innovation, regulation and accountability.'
+  ],
+  phrases:['One potential benefit is…','However, an important limitation is…','This raises questions about…','A balanced approach would…']
+ }
+};
+const C1_LEVELS=[
+ {title:'B2 起步｜把意思講完整',word:'80–120',min:80,max:120,aim:'結論、原因、具體例子'},
+ {title:'B2 進階｜比較與解釋',word:'110–150',min:110,max:150,aim:'比較選項、說明取捨'},
+ {title:'B2 練習檢核｜完整四技能',word:'140–190',min:140,max:190,aim:'立場、證據、反方意見'},
+ {title:'C1 銜接｜細緻論證',word:'180–230',min:180,max:230,aim:'限制、權衡與清楚的建議'}
+];
+let c1Answer=null,c1MaterialIndex=0,c1Draft='',c1Spoken=false;
 function c1State(){
-  if(!st.curriculum)st.curriculum={completed:{},notes:{},unit:1};
-  if(!st.curriculum.completed)st.curriculum.completed={};
-  return st.curriculum;
+ if(!st.curriculum)st.curriculum={completed:{},notes:{},unit:1};
+ if(!st.curriculum.pathwayV3)st.curriculum.pathwayV3={completed:{},topic:'diplomatic',answers:{}};
+ return st.curriculum.pathwayV3;
 }
-function c1Next(){
-  const s=c1State();
-  for(const x of C1_PLAN) if(!s.completed[x.day]) return x;
-  return C1_PLAN[C1_PLAN.length-1];
-}
-function c1Count(){return C1_PLAN.filter(x=>c1State().completed[x.day]).length}
-function c1Inject(){
-  if(document.getElementById('c1SchoolHome')){c1Render();return}
-  const css=document.createElement('style');
-  css.textContent=`.c1Card{border:2px solid #d8ddce}.c1Today{background:var(--soft);border-radius:14px;padding:14px}.c1Bar{height:10px;background:#e7e8e2;border-radius:999px;overflow:hidden}.c1Bar>i{display:block;height:100%;background:#222}.c1Links{display:flex;gap:8px;flex-wrap:wrap}.c1Links a{display:inline-block;border:1px solid var(--line);padding:9px 12px;border-radius:10px;color:inherit;text-decoration:none;background:#fff}.c1Done{text-decoration:line-through;opacity:.65}`;
-  document.head.appendChild(css);
-  const home=document.createElement('div');home.id='c1SchoolHome';home.className='card c1Card';
-  const anchor=document.getElementById('habitPanel');
-  anchor.insertAdjacentElement('afterend',home);c1Render();
-}
+function c1Count(){return Object.keys(c1State().completed).filter(k=>c1State().completed[k]&&Number(k)>=1&&Number(k)<=16).length}
+function c1NextNum(){for(let i=1;i<=16;i++)if(!c1State().completed[i])return i;return 16}
 function c1Render(){
-  const el=document.getElementById('c1SchoolHome');if(!el)return;
-  const s=c1State(),x=c1Next(),count=c1Count(),allDone=count>=C1_PLAN.length,pct=Math.round(count/C1_PLAN.length*100);
-  el.innerHTML=`
-    <div class="row" style="justify-content:space-between;align-items:flex-start">
-      <div><span class="pill">v1.7・低壓 C1</span><h2 style="margin:8px 0 4px">📘 下一堂正課｜${allDone?'Unit 1 這階段完成':'Session '+x.day+'/8'}</h2><p class="small" style="margin:0">每週約 4 次、每次 30 分鐘。沒有補課債；休息日不算落後。</p></div>
-      <div class="metric miniMetric"><span class="small">目前進度</span><b>${count}/8</b><span class="small">sessions</span></div>
-    </div>
-    <div class="c1Bar" style="margin:12px 0"><i style="width:${pct}%"></i></div>
-    <div class="c1Today">
-      <div class="row"><span class="pill">${esc(x.pages)}</span><span class="pill">約 30 分鐘</span></div>
-      <h3 style="margin-bottom:8px">${esc(x.title)}</h3>
-      <p><b>主課本：</b>${esc(x.main)}</p>
-      <p><b>輸出：</b>${esc(x.output)}</p>
-      <div class="c1Links"><a href="${C1_SUSSEX}" target="_blank" rel="noopener">📖 Sussex 官方課本</a><a href="${C1_BBC}" target="_blank" rel="noopener">🎧 BBC（有餘力再看）</a></div>
-    </div>
-    <div class="row" style="margin-top:12px">
-      <button class="primary" onclick="c1CompleteToday()" ${allDone?'disabled':''}>${allDone?'這階段完成':'✅ 完成這一堂'}</button>
-      <button onclick="c1ShowPlan()">看 8 堂課表</button>
-    </div>
-    <div id="c1PlanBox" class="hidden"></div>
-    <p class="small" style="margin-bottom:0">最低版本：只讀 10 分鐘＋說 1 句英文也算出現。狀態差就停，不補、不追。</p>`;
+ const el=document.getElementById('c1SchoolHome');if(!el||!currentUser)return;
+ const s=c1State(),count=c1Count(),all=count===16,num=c1NextNum(),tier=Math.floor((num-1)/4),skill=C1_SKILLS[(num-1)%4],data=C1_TOPICS[s.topic]||C1_TOPICS.diplomatic;
+ const materialIndex=Math.floor((num-1)/4)%2;
+ const block=data[skill],unit=skill==='reading'||skill==='listening'?block[materialIndex]:null;
+ const resource=C1_SOURCES.map(x=>'<a href="'+x.url+'" target="_blank" rel="noopener noreferrer">'+esc(x.name)+'</a>').join(' · ');
+ el.innerHTML='<div class="row" style="justify-content:space-between;align-items:start"><div><span class="pill">B2 檢定 → C1｜興趣導向</span><h2>🎓 英文主線：B2 通關，C1 進階</h2><p class="small">每週挑 3 次，每次約 20–30 分鐘；不補課。先通過正式英檢 B2 四技能，再持續往 C1。</p></div><span class="pill">'+count+'/16</span></div>'+
+ '<div class="c1Bar" style="margin:12px 0"><i style="width:'+(count/16*100)+'%"></i></div>'+
+ '<div class="tip"><b>'+C1_LEVELS[tier].title+'</b>｜下一堂 '+num+'/16：'+C1_LABELS[skill]+'<p class="small">四技能輪替，不會只練口說。每 4 堂完成一輪。</p></div>'+
+ '<label class="small" for="c1Topic">挑你今天真正想讀的主題</label><select id="c1Topic" onchange="c1TopicChanged(this.value)">'+
+ Object.entries(C1_TOPICS).map(([k,v])=>'<option value="'+k+'" '+(s.topic===k?'selected':'')+'>'+esc(v.name)+'</option>').join('')+'</select>'+
+ (all?'<p>✅ 這一輪 16 堂已完成。此進度不代表通過官方 B2；下一步請以正式四技能模擬測驗與英檢成績判斷。</p>':'<div class="c1Today" style="margin-top:12px">'+
+ '<div class="row"><span class="pill">'+C1_LABELS[skill]+'</span><span class="pill">20–30 分鐘</span><span class="pill">原創模擬情境・非即時新聞</span></div>'+
+ '<h3 style="margin-top:10px">'+esc(unit?unit.title:skill==='writing'?'Briefing / opinion writing':'Clear speaking / diplomacy')+'</h3>'+
+ c1LessonContent(skill,data,materialIndex,num)+
+ '<div id="c1Feedback" style="margin-top:12px"></div>'+
+ '<div class="row" style="margin-top:12px"><button class="primary" onclick="c1CompleteToday()">✅ 完成這一堂</button><button onclick="c1ChangeTopic()">換題材</button></div></div>')+
+ '<details style="margin-top:14px"><summary><b>如何申請 B2 英檢？／官方閱讀資源</b></summary>'+
+ '<p class="small">外交特考英文組與國際法組須有報名前 3 年內、含聽說讀寫的有效 B2 證明；需依報考年度公告確認採認測驗及四項門檻。這個程式不是官方測驗，也不會推定你已取得 B2。</p>'+
+ '<div class="c1Links">'+resource+'</div><p class="small">官方新聞可自行選有趣的文章；不會把即時新聞混充成程式內的原創題材。</p></details>'+
+ '<p class="small">最低門檻：10 分鐘也值得。若今天真的不喜歡題材，直接換，不必硬讀。</p>';
 }
-function c1ShowPlan(){
-  const box=document.getElementById('c1PlanBox');if(!box)return;
-  const s=c1State();box.classList.toggle('hidden');if(box.classList.contains('hidden'))return;
-  box.innerHTML='<div class="stack" style="margin-top:12px">'+C1_PLAN.map(x=>`<div class="tip ${s.completed[x.day]?'c1Done':''}"><b>Session ${x.day}｜${esc(x.title)}</b><br><span class="small">${esc(x.pages)}・約 30 分鐘</span></div>`).join('')+'</div>';
+function c1LessonContent(skill,data,idx,num){
+ const lev=C1_LEVELS[Math.floor((num-1)/4)];
+ if(skill==='reading'){
+  const x=data.reading[idx];return '<p style="line-height:1.7;max-width:65ch">'+esc(x.text)+'</p>'+
+   '<p><b>閱讀理解：</b>'+esc(x.q)+'</p>'+x.choices.map((v,i)=>'<label class="c1Option"><input type="radio" name="c1Quiz" value="'+i+'" onchange="c1Answer='+i+'"> '+esc(v)+'</label>').join('')+
+   '<button onclick="c1Check()">檢查答案</button><p class="small">先找作者的主旨和因果，再查不懂的 2–3 個字。</p>';
+ }
+ if(skill==='listening'){
+  const x=data.listening[idx];return '<p>請先聽，不看逐字稿。使用瀏覽器內建語音朗讀，並非真人考試錄音。</p>'+
+   '<button class="primary" onclick="c1PlayListening()">▶ 播放聽力（英文）</button> <button onclick="c1StopAudio()">停止</button>'+
+   '<p><b>聽力問題：</b>'+esc(x.q)+'</p>'+x.choices.map((v,i)=>'<label class="c1Option"><input type="radio" name="c1Quiz" value="'+i+'" onchange="c1Answer='+i+'"> '+esc(v)+'</label>').join('')+
+   '<button onclick="c1Check()">檢查答案</button><details><summary>聽完再看逐字稿</summary><p>'+esc(x.text)+'</p></details>';
+ }
+ if(skill==='speaking')return '<p class="sentence">'+esc(data.speaking[Math.floor((num-1)/4)])+'</p>'+
+ '<div class="tip">結構提示：'+esc(lev.aim)+'。先說 45–90 秒；若有餘力再說一次。</div>'+
+ '<label class="c1Option"><input type="checkbox" id="c1Spoke" onchange="c1Spoken=this.checked"> 我已經口頭講過至少一次</label>'+
+ '<p class="small">要深度回饋可進 Speak Smart 9，或複製題目去 ChatGPT；程式不會儲存錄音或逐字稿。</p>';
+ if(skill==='writing')return '<p><b>寫作題：</b>'+esc(data.writing[Math.floor((num-1)/4)])+'</p>'+
+ '<p class="small">參考長度 '+lev.word+' 字；先完成再修改。這不是官方考試規定字數。</p>'+
+ '<textarea id="c1Writing" rows="7" oninput="c1Draft=this.value;c1WordCount()" placeholder="Type your answer here. 這段只暫存在本頁，不上傳雲端。"></textarea>'+
+ '<p class="small" id="c1Words">0 words</p><button onclick="c1CopyWriting()">複製給 ChatGPT 批改</button>';
+ return '';
+}
+function c1TopicChanged(topic){
+ if(!C1_TOPICS[topic])return;c1State().topic=topic;c1Answer=null;c1Spoken=false;c1Draft='';save();c1Render();
+}
+function c1ChangeTopic(){
+ const keys=Object.keys(C1_TOPICS),s=c1State(),i=keys.indexOf(s.topic);
+ c1TopicChanged(keys[(i+1)%keys.length]);}
+function c1PlayListening(){
+ const s=c1State(),i=Math.floor((c1NextNum()-1)/4)%2,x=C1_TOPICS[s.topic].listening[i];
+ if(!('speechSynthesis' in window)){document.getElementById('c1Feedback').textContent='此瀏覽器不支援朗讀；請改用文字或其他裝置。';return;}
+ window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(x.text);u.lang='en-GB';u.rate=.86;window.speechSynthesis.speak(u);
+}
+function c1StopAudio(){if('speechSynthesis' in window)window.speechSynthesis.cancel()}
+function c1Check(){
+ const num=c1NextNum(),skill=C1_SKILLS[(num-1)%4],idx=Math.floor((num-1)/4)%2;
+ const x=C1_TOPICS[c1State().topic][skill][idx],f=document.getElementById('c1Feedback');
+ if(c1Answer===null){f.textContent='先選一個答案，再按檢查。';return;}
+ const good=c1Answer===x.answer;
+ f.innerHTML='<div class="tip">'+(good?'✅ 正確。':'尚未答對，可再看一次材料。')+' '+esc(x.why)+'</div>';
+}
+function c1WordCount(){const n=c1Draft.trim()?c1Draft.trim().split(/\s+/).length:0;const el=document.getElementById('c1Words');if(el)el.textContent=n+' words'}
+function c1CopyWriting(){
+ const text=document.getElementById('c1Writing')?.value||'';
+ const q=C1_TOPICS[c1State().topic].writing[Math.floor((c1NextNum()-1)/4)];
+ const msg='請以 B2→C1 英文教練身份批改我的外交/國關寫作：'+q+'\n我的草稿：'+text+'\n請評估主旨、論證、清晰度，最多修正兩個重點；提供B2自然版及C1升級句。';
+ if(!navigator.clipboard?.writeText){window.prompt('請複製：',msg);return}
+ navigator.clipboard.writeText(msg).then(()=>{if(typeof hToast==='function')hToast('已複製。貼到 ChatGPT 即可。')}).catch(()=>window.prompt('請複製：',msg));
 }
 async function c1CompleteToday(){
-  const s=c1State(),x=c1Next();s.completed[x.day]=true;s.lastCompleted=new Date().toISOString();
-  await save();if(typeof hMark==='function')await hMark('course');c1Render();
-  if(typeof hToast==='function')hToast('📘 今天夠了。完成就停，不補更多。');
+ const num=c1NextNum(),skill=C1_SKILLS[(num-1)%4],s=c1State();
+ if(s.completed[num])return;
+ if(skill==='reading'||skill==='listening'){
+  const x=C1_TOPICS[s.topic][skill][Math.floor((num-1)/4)%2];
+  if(c1Answer!==x.answer){document.getElementById('c1Feedback').textContent='先完成一題理解檢查；答案不對也可以重新聽或閱讀。';return;}
+ }
+ if(skill==='speaking'&&!c1Spoken){document.getElementById('c1Feedback').textContent='先練習口說一次，再勾選確認。';return;}
+ if(skill==='writing'&&!c1Draft.trim()){document.getElementById('c1Feedback').textContent='先寫幾句英文；今天不要求一次寫到完整字數。';return;}
+ s.completed[num]={date:new Date().toISOString(),topic:s.topic,skill};
+ c1Answer=null;c1Draft='';c1Spoken=false;c1StopAudio();
+ await save();if(typeof hMark==='function')await hMark('course');c1Render();
+ if(typeof hToast==='function')hToast('📘 完成一堂。今天不欠課。');
 }
-window.addEventListener('load',()=>setTimeout(c1Inject,600));
-setTimeout(c1Inject,850);
+function c1ShowPlan(){document.getElementById('c1SchoolHome')?.scrollIntoView({behavior:'smooth'})}
+function c1Inject(){
+ if(document.getElementById('c1SchoolHome')){c1Render();return}
+ const anchor=document.getElementById('habitPanel');if(!anchor)return;
+ const css=document.createElement('style');css.textContent='.c1Bar{height:10px;background:#e7e8e2;border-radius:99px;overflow:hidden}.c1Bar>i{display:block;height:100%;background:#20211f}.c1Today{background:var(--soft);padding:14px;border-radius:14px}.c1Option{display:flex;align-items:center;gap:10px;padding:8px 0}.c1Option input{width:auto}.c1Links{display:flex;gap:9px;flex-wrap:wrap;margin-top:10px}.c1Links a{padding:8px;border:1px solid #ddd;border-radius:8px;background:white;color:inherit;text-decoration:none}';document.head.appendChild(css);
+ const home=document.createElement('div');home.id='c1SchoolHome';home.className='card';anchor.insertAdjacentElement('afterend',home);c1Render();
+}
+window.addEventListener('load',()=>setTimeout(c1Inject,700));setTimeout(c1Inject,1000);
