@@ -146,7 +146,7 @@ function c1Render(){
  '<div class="tip"><b>'+C1_LEVELS[tier].title+'</b>｜下一堂 '+num+'/16：'+C1_LABELS[skill]+'<p class="small">四技能輪替，不會只練口說。每 4 堂完成一輪。</p></div>'+
  '<label class="small" for="c1Topic">挑你今天真正想讀的主題</label><select id="c1Topic" onchange="c1TopicChanged(this.value)">'+
  Object.entries(C1_TOPICS).map(([k,v])=>'<option value="'+k+'" '+(s.topic===k?'selected':'')+'>'+esc(v.name)+'</option>').join('')+'</select>'+
- (all?'<p>✅ 這一輪 16 堂已完成。此進度不代表通過官方 B2；下一步請以正式四技能模擬測驗與英檢成績判斷。</p>':'<div class="c1Today" style="margin-top:12px">'+
+ (all?c1AdvancedHtml(s):'<div class="c1Today" style="margin-top:12px">'+
  '<div class="row"><span class="pill">'+C1_LABELS[skill]+'</span><span class="pill">20–30 分鐘</span><span class="pill">原創模擬情境・非即時新聞</span></div>'+
  '<h3 style="margin-top:10px">'+esc(unit?unit.title:skill==='writing'?'Briefing / opinion writing':'Clear speaking / diplomacy')+'</h3>'+
  c1LessonContent(skill,data,materialIndex,num)+
@@ -157,6 +157,33 @@ function c1Render(){
  '<p class="small">外交特考英文組與國際法組須有報名前 3 年內、含聽說讀寫的有效 B2 證明；需依報考年度公告確認採認測驗及四項門檻。這個程式不是官方測驗，也不會推定你已取得 B2。</p>'+
  '<div class="c1Links">'+resource+'</div><p class="small">官方新聞可自行選有趣的文章；不會把即時新聞混充成程式內的原創題材。</p></details>'+
  '<p class="small">最低門檻：10 分鐘也值得。若今天真的不喜歡題材，直接換，不必硬讀。</p>';
+}
+/* Ongoing C1 elective labs after the 16-session B2-to-C1 bridge.
+   These are self-directed activities using official editorial sources, not a proficiency certificate. */
+function c1AdvancedHtml(s){
+ const n=(s.advancedSessions||[]).length,skill=C1_SKILLS[n%4],topic=s.topic;
+ const work={
+  reading:'從下方 UN Geneva 或 UNHCR 官方網站挑一篇你感興趣的英文文章（外交、國際危機、科技政策等），讀 15 分鐘。整理作者主張、兩項證據，以及一個未解決的問題；標出事實與評論。',
+  listening:'從 UN Geneva 官方 News & Media 頁面選一段你願意聽的英文影音或訪談，聽 2–5 分鐘兩次。第一次抓主旨，第二次找兩個細節。說出「講者有什麼不確定性」。',
+  speaking:'選一則你剛讀過的國關或科技故事，做 2 分鐘簡報：立場 → 背景 → 兩個理由 → 反方疑慮 → 建議。再用 30 秒回答假想追問。',
+  writing:'就最近讀過的國關、AI 或人道議題撰寫 180–250 字英文 policy brief。先寫結論與建議，再寫證據、可能反對理由和限制；最後自己修正兩處。'
+ };
+ const link=topic==='diplomatic'?'https://www.ungeneva.org/en/news-media/news':topic==='technology'?'https://www.unhcr.org/news/stories':'https://www.ungeneva.org/en/news-media';
+ return '<div class="c1Today" style="margin-top:12px"><span class="pill">C1 延伸練習｜第 '+(n+1)+' 次</span><h3>'+C1_LABELS[skill]+'・自主深度任務</h3><p>'+work[skill]+'</p>'+
+ '<p class="small">題材由你決定；不強迫完成不感興趣的新聞。閱讀／聽力材料來自外部官方網站，程式不會假裝自動更新即時內容。</p>'+
+ '<div class="c1Links"><a href="'+link+'" target="_blank" rel="noopener noreferrer">開啟官方素材庫</a></div>'+
+ '<label class="c1Option"><input id="c1AdvancedDone" type="checkbox"> 我已完成今天這項技能的練習</label>'+
+ '<button class="primary" onclick="c1AdvancedFinish()">記錄這次 C1 深度練習</button>'+
+ '<p class="small">已記錄 '+n+' 次 C1 延伸練習。這只是練習紀錄；能力級別仍須由正式測驗和專業評估確認。</p></div>';
+}
+async function c1AdvancedFinish(){
+ const el=document.getElementById('c1AdvancedDone');
+ if(!el?.checked){if(typeof hToast==='function')hToast('先完成練習並勾選，再記錄。');return}
+ const s=c1State(),sessions=s.advancedSessions||(s.advancedSessions=[]),skill=C1_SKILLS[sessions.length%4];
+ sessions.push({date:new Date().toISOString(),topic:s.topic,skill});
+ if(sessions.length>120)sessions.splice(0,sessions.length-120);
+ await save();if(typeof hMark==='function')await hMark('course');c1Render();
+ if(typeof hToast==='function')hToast('完成一次 C1 深度練習。今天就到這裡。');
 }
 function c1LessonContent(skill,data,idx,num){
  const lev=C1_LEVELS[Math.floor((num-1)/4)];
