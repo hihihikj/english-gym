@@ -46,12 +46,12 @@ function hRender(){
   }).join('');
   const cue=esc(hs.plan.cue||'完成一個固定日常動作後'),action=hs.plan.action||'gym5';
   box.innerHTML=`
-    <div class="row" style="justify-content:space-between;align-items:flex-start"><div><span class="pill">v1.6・過程優先</span><h2 style="margin:8px 0 4px">${hGrowth(activeDays)} 本週英文足跡</h2><p class="small" style="margin:0">不是連勝。空白日不扣分；重新出現就繼續。</p></div><div class="metric miniMetric"><span class="small">本週出現</span><b>${activeDays}/5</b><span class="small">天</span></div></div>
+    <div class="row" style="justify-content:space-between;align-items:flex-start"><div><span class="pill">v1.6・過程優先</span><h2 style="margin:8px 0 4px">${hGrowth(activeDays)} 本週英文足跡</h2><p class="small" style="margin:0">不是連勝。空白日不扣分；重新出現就繼續。</p></div><div class="metric miniMetric"><span class="small">本週出現</span><b>${activeDays}/3</b><span class="small">天</span></div></div>
     <div class="habitWeek">${tiles}</div>
     <div class="tip"><b>今天只專注 1 件事：</b> ${esc(hTopFocus())}</div>
     <details style="margin-top:12px"><summary><b>⚓ 我的「看到線索就開始」計畫</b></summary>
       <div class="stack" style="margin-top:12px"><label class="small">當我……</label><input id="habitCue" value="${cue}" maxlength="90" />
-      <label class="small">我就先做……</label><select id="habitAction"><option value="smart" ${action==='smart'?'selected':''}>🗣️ Speak Smart 9</option><option value="gym5" ${action==='gym5'?'selected':''}>English Gym 5 分鐘</option><option value="reading" ${action==='reading'?'selected':''}>Reading 10</option><option value="recall" ${action==='recall'?'selected':''}>Phrase Recall 3</option><option value="course" ${action==='course'?'selected':''}>📘 今日 Sussex 正課</option><option value="ielts" ${action==='ielts'?'selected':''}>IELTS 今日建議課</option></select>
+      <label class="small">我就先做……</label><select id="habitAction"><option value="smart" ${action==='smart'?'selected':''}>🗣️ Speak Smart 9</option><option value="gym5" ${action==='gym5'?'selected':''}>English Gym 5 分鐘</option><option value="reading" ${action==='reading'?'selected':''}>Reading 10</option><option value="recall" ${action==='recall'?'selected':''}>Phrase Recall 3</option><option value="course" ${action==='course'?'selected':''}>🎓 B2→C1 興趣主課</option><option value="ielts" ${action==='ielts'?'selected':''}>IELTS 今日建議課</option></select>
       <div class="row"><button onclick="hSavePlan()">儲存這個線索</button><button class="primary" onclick="hStartPlan()">現在直接開始</button></div>
       <p class="small">例：刷完牙後／喝完第一杯咖啡後／坐到書桌前。固定線索比只靠「等有動力」更容易啟動。</p></div></details>`;
   hRenderRecallHome();
