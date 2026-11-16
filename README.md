@@ -1,3 +1,16 @@
+# English Gym v2.3 — 極簡學習介面
+
+## v2.3 使用方式
+- 登入後進入「今天」：只顯示 B2→C1 主線的下一堂、16 堂進度、一個開始按鈕。
+- 點「開始這堂課」開啟完整主線教材；完成後沿用原本的私人同步紀錄，返回首頁即可看到新進度。
+- 「今天只有 5 分鐘」會開啟原本的 5 分鐘 English Gym。
+- 「練習」集中 Speak Smart 9、Reading 10、Phrase Recall、English Gym 與 IELTS。
+- 「進度」保留本週足跡、口說和聽寫指標；「設定」集中雲端同步、費用防護、帳號與備份。
+- 原本的課程、檢定練習、間隔複習、語音與狀態 schema 全數保留；沒有 Supabase schema 或付費 API 變更。
+- 界面資產：simple-ui.js、simple-ui.css；PWA 快取版本：english-gym-v2-3。
+- 注意：程式中的 16 堂是 B2→C1 橋接學習進度，不是官方 CEFR 能力認證或預測考試分數。
+
+---
 # English Gym v1.3 SECURE FREE
 
 個人英語系統：Reading 10 + Dictation → Echo/Shadowing → Retrieval Speaking + Feedback → Free Speaking + Feedback。
