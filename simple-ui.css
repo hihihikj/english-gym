@@ -1,0 +1,44 @@
+/* English Gym 2.3: one next step on the home screen. */
+body.simple-ui{--bg:#f7f8f5;--soft:#f2f4f0;--line:#e3e8e1;--accent:#253e34;color:#202822}
+body.simple-ui .wrap{max-width:740px;padding:25px 18px 90px}
+body.simple-ui .top{align-items:center;margin:0 0 22px}
+body.simple-ui .top h1{font-size:25px;letter-spacing:-.04em;font-weight:750}
+body.simple-ui .top .small{font-size:12px;margin-top:4px}
+body.simple-ui .card{border-radius:17px;box-shadow:none;margin:12px 0}
+body.simple-ui button{transition:background .15s,border-color .15s}
+body.simple-ui button:focus-visible{outline:3px solid #83aa96;outline-offset:3px}
+body.simple-ui .simple-nav{display:flex;gap:4px;padding:5px;background:#ecefea;border-radius:14px;margin-bottom:20px}
+body.simple-ui .simple-nav[hidden],body.simple-ui .simple-screen[hidden],body.simple-ui .simple-menu[hidden],body.simple-ui .simple-active[hidden],body.simple-ui .simple-practice-group[hidden]{display:none!important}
+body.simple-ui .simple-nav button{flex:1;border:0;background:transparent;color:#667269;padding:11px 4px;border-radius:10px;font-size:14px;font-weight:600}
+body.simple-ui .simple-nav button.is-active{background:white;color:#1c2c22;box-shadow:0 1px 4px #233d2f16}
+body.simple-ui .simple-hero{background:#fff;border:1px solid var(--line);border-radius:23px;padding:32px 30px 25px}
+body.simple-ui .simple-kicker{font-size:12px;color:#5b7566;font-weight:750;letter-spacing:.13em;text-transform:uppercase}
+body.simple-ui .simple-hero h2{font-size:clamp(28px,5vw,39px);letter-spacing:-.035em;line-height:1.16;margin:14px 0 12px}
+body.simple-ui .simple-hero p{color:var(--muted);font-size:15px;margin:0}
+body.simple-ui .simple-progress-meta{display:flex;justify-content:space-between;margin:32px 0 10px;font-size:13px;color:#6a746d}
+body.simple-ui .simple-progress-meta strong{color:var(--accent);font-size:14px}
+body.simple-ui .simple-track{background:#e5ebe5;border-radius:99px;height:7px;overflow:hidden}
+body.simple-ui .simple-track>div{height:100%;width:0;border-radius:inherit;background:#446857;transition:width .2s}
+body.simple-ui .simple-primary{display:block;width:100%;padding:17px 18px;font-size:18px;font-weight:650;margin-top:27px;border-radius:13px}
+body.simple-ui .simple-hero .simple-micro{font-size:12px;text-align:center;margin-top:14px}
+body.simple-ui .simple-week{display:flex;justify-content:space-between;align-items:center;padding:21px 8px 13px;border-bottom:1px solid var(--line);font-size:14px;color:#566459}
+body.simple-ui .simple-week b{font-size:17px;color:#213e31}
+body.simple-ui .simple-text-link{display:block;margin:18px auto 0;border:0;color:#4f6658;background:none;text-decoration:underline;text-underline-offset:4px;font-size:13px}
+body.simple-ui .simple-back{border:0;background:transparent;padding:4px 0 15px;color:#466351;font-weight:650}
+body.simple-ui .simple-section-title{margin:4px 0 20px}
+body.simple-ui .simple-section-title h2{font-size:25px;letter-spacing:-.025em;margin:0 0 6px}
+body.simple-ui .simple-section-title p{font-size:13px;color:var(--muted);margin:0}
+body.simple-ui .simple-choice{width:100%;display:flex;justify-content:space-between;align-items:center;text-align:left;background:white;border:1px solid var(--line);border-radius:14px;padding:19px 20px;margin:9px 0}
+body.simple-ui .simple-choice:hover{border-color:#a9bbad;background:#fbfcfa}
+body.simple-ui .simple-choice-copy{display:flex;flex-direction:column;gap:4px}
+body.simple-ui .simple-choice-copy b{font-size:17px;color:#213027}
+body.simple-ui .simple-choice-copy small{font-size:13px;color:var(--muted)}
+body.simple-ui .simple-choice>span:last-child{font-size:27px;color:#688477}
+body.simple-ui .simple-active>h2{margin:0 0 16px;font-size:23px}
+body.simple-ui #simple-settings .card{font-size:14px}
+body.simple-ui #simple-lesson .card{margin-top:0}
+body.simple-ui .simple-screen{min-width:0}
+body.simple-ui #simple-progress .habitCard{border:1px solid var(--line)}
+body.simple-ui #simple-settings #installBtn{margin:10px 0}
+@media(max-width:620px){body.simple-ui .wrap{padding:20px 14px 80px}body.simple-ui .simple-hero{padding:28px 21px 22px}body.simple-ui .simple-nav{margin-bottom:17px}body.simple-ui .simple-choice{padding:17px 15px}body.simple-ui .simple-week{padding-left:4px;padding-right:4px}}
+@media(prefers-reduced-motion:reduce){body.simple-ui *{scroll-behavior:auto!important;transition:none!important}}
